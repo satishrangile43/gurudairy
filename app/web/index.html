@@ -1,393 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuruDiary | The Operating System for Teachers</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --base-color: #E0E5EC;
-            --dark-shadow: #A3B1C6;
-            --light-shadow: #FFFFFF;
-            --text-main: #2D3436;
-            --text-sub: #607D8B; 
-            --dark-bg: #263238; 
-            --cyan-accent: #18ffff;
-        }
+  <base href="/gurudairy/app/web/">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
-        body { background-color: var(--base-color); color: var(--text-main); overflow-x: hidden; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="GuruDiary Web Portal - The Operating System for Teachers.">
 
-        /* 1. HERO SECTION */
-        .hero { padding: 100px 20px 40px; text-align: center; }
-        .hero-icon { font-size: 60px; color: #1a237e; margin-bottom: 20px; }
-        .hero h1 { font-size: clamp(45px, 6vw, 80px); font-weight: 900; color: #1a237e; letter-spacing: 8px; line-height: 1.1; }
-        .hero h2 { font-size: clamp(18px, 3vw, 24px); color: var(--text-main); font-weight: 700; margin-top: 15px; }
-        .hero p { font-size: clamp(14px, 2vw, 18px); color: var(--text-sub); font-weight: 600; line-height: 1.5; max-width: 700px; margin: 20px auto 50px; }
-        .scroll-hint { animation: bounce 1s infinite alternate ease-in-out; margin-top: 50px; }
-        .scroll-hint span { font-weight: 900; color: #5c6bc0; letter-spacing: 2px; font-size: 12px; display: block; margin-bottom: 10px; }
-        .scroll-hint i { color: #7986cb; font-size: 30px; }
+  <meta name="google-signin-client_id" content="330749254136-qjdffnjicdjbf3u21n5e5u77e37o19t1.apps.googleusercontent.com">
 
-        /* 2. FEATURES SECTION */
-        .features-section { padding: 80px 0; }
-        .features-header { padding: 0 50px; text-align: center;}
-        .features-header h2 { font-weight: 900; font-size: 35px; letter-spacing: 3px; color: #37474f; }
-        .features-header p { color: #607d8b; font-weight: bold; font-size: 16px; margin-top: 10px; margin-bottom: 50px; }
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="gurudiary">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-        .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 40px 20px; gap: 20px; -ms-overflow-style: none; scrollbar-width: none; }
-        .carousel-track::-webkit-scrollbar { display: none; }
+  <link rel="icon" type="image/png" href="favicon.png">
 
-        .feature-item { flex: 0 0 250px; scroll-snap-align: center; background: var(--base-color); border-radius: 25px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.5; transform: scale(0.9); box-shadow: 4px 4px 10px rgba(163,177,198,0.3), -4px -4px 10px #fff; }
-        .feature-item.active { opacity: 1; transform: scale(1.05); box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow); }
-        .feature-icon-circle { width: 50px; height: 50px; border-radius: 50%; background: var(--base-color); box-shadow: 2px 2px 4px rgba(163,177,198,0.3), -2px -2px 4px #fff; display: flex; justify-content: center; align-items: center; margin: 0 auto 10px; font-size: 20px; transition: all 0.3s; }
-        .feature-item.active .feature-icon-circle { width: 65px; height: 65px; font-size: 28px; margin-bottom: 20px; }
-        .feature-item h3 { font-weight: 900; font-size: 12px; color: var(--text-main); transition: 0.3s; }
-        .feature-item.active h3 { font-size: 16px; }
-        .feature-item .sub { font-weight: bold; font-size: 10px; color: #90a4ae; margin-top: 5px; display: none; }
-        .feature-item.active .sub { display: block; }
+  <title>GuruDiary Web</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  
+  <style id="splash-screen-style">
+    html {
+      height: 100%
+    }
 
-        .feature-detail-box { background: var(--base-color); border-radius: 30px; box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow); padding: 60px; margin: 40px auto 0; max-width: 1000px; display: flex; gap: 60px; align-items: center; transition: opacity 0.4s ease; }
-        .detail-left { flex: 2; text-align: right; }
-        .detail-right { flex: 3; text-align: left; }
-        .detail-icon { font-size: 80px; margin-bottom: 40px; }
-        .detail-left h3 { font-size: 35px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
-        .detail-left h4 { font-size: 14px; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
-        .detail-right .tagline { font-size: 24px; font-weight: 900; color: #37474f; margin-bottom: 20px; line-height: 1.3; }
-        .detail-right .desc { font-size: 16px; color: #455a64; line-height: 1.6; margin-bottom: 30px; }
-        .detail-right .divider { height: 2px; width: 50px; background: #cfd8dc; margin-bottom: 30px; }
-        .bullet-point { display: flex; align-items: flex-start; margin-bottom: 15px; }
-        .bullet-point i { font-size: 20px; margin-right: 15px; margin-top: 2px; }
-        .bullet-point span { font-weight: bold; color: #455a64; font-size: 15px; line-height: 1.4; }
+    body {
+      margin: 0;
+      min-height: 100%;
+      background-color: #E0E5EC;
+          background-size: 100% 100%;
+    }
 
-        /* 3. INSTALLATION SECTION (SECURE EMAIL FORM) */
-        .install-section { padding: 80px 20px; text-align: center; }
-        .install-section h2 { font-size: 35px; font-weight: 900; letter-spacing: 2px; color: #2D3436; }
-        
-        .email-capture-box { background: var(--base-color); max-width: 600px; margin: 0 auto 40px; padding: 40px; border-radius: 20px; box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); }
-        .email-capture-box input { width: 100%; padding: 15px; border-radius: 10px; border: none; background: #E0E5EC; box-shadow: inset 4px 4px 8px #A3B1C6, inset -4px -4px 8px #FFFFFF; font-size: 16px; margin-bottom: 25px; outline: none; text-align: center; font-weight: 600;}
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
 
-        .action-hub { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
-        .action-btn { display: flex; align-items: center; width: 250px; padding: 25px; background-color: var(--base-color); border-radius: 20px; border: none; box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); text-decoration: none; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
-        .action-btn:hover { transform: scale(1.05); box-shadow: 12px 12px 20px var(--dark-shadow), -12px -12px 20px var(--light-shadow); }
-        .action-icon { font-size: 35px; margin-right: 20px; }
-        .action-text { display: flex; flex-direction: column; text-align: left; }
-        .action-title { font-weight: 900; font-size: 15px; color: #37474f; margin-bottom: 5px; }
-        .action-subtitle { font-weight: bold; font-size: 11px; color: #9e9e9e; }
+    .contain {
+      display:block;
+      width:100%; height:100%;
+      object-fit: contain;
+    }
 
-        .status-msg { margin-top: 20px; font-weight: bold; font-size: 14px; display: none; }
+    .stretch {
+      display:block;
+      width:100%; height:100%;
+    }
 
-        .email-badge { display: inline-flex; align-items: center; padding: 15px 25px; background-color: rgba(255, 152, 0, 0.1); border-radius: 30px; border: 1px solid rgba(255, 152, 0, 0.5); margin-top: 30px; }
-        .email-badge i { color: #ff9800; font-size: 18px; margin-right: 10px; }
-        .email-badge span { color: #ef6c00; font-weight: bold; font-size: 14px; }
+    .cover {
+      display:block;
+      width:100%; height:100%;
+      object-fit: cover;
+    }
 
-        /* TOAST NOTIFICATION */
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #2D3436; color: #fff; padding: 16px 32px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 700; font-size: 15px; z-index: 9999; display: flex; align-items: center; gap: 15px; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toast.show { bottom: 40px; }
-        .toast i { color: #00E676; font-size: 20px; }
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
 
-        /* 4. STORY SECTION */
-        .story-section { background-color: var(--dark-bg); padding: 80px 20px; box-shadow: 0 10px 20px rgba(163, 177, 198, 0.5); text-align: center; }
-        .story-section h4 { color: var(--cyan-accent); font-weight: 900; letter-spacing: 4px; font-size: 16px; margin: 20px 0 30px; }
-        .story-section p { color: rgba(255,255,255,0.9); font-size: clamp(16px, 2vw, 22px); font-weight: 300; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+    .bottomLeft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
 
-        /* 5. FOOTER */
-        footer { padding: 60px 50px; border-top: 1px solid rgba(163, 177, 198, 0.3); display: flex; justify-content: space-between; align-items: flex-end;}
-        .footer-left h2 { color: #9e9e9e; font-weight: 900; letter-spacing: 5px; margin-bottom: 10px; }
-        .footer-left p { color: #90a4ae; font-size: 12px; }
-        .footer-right { text-align: right; }
-        .footer-right p { color: #607D8B; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-        .footer-right a { color: #3f51b5; font-weight: bold; text-decoration: none; font-size: 14px; }
-
-        /* MOBILE RESPONSIVE */
-        @media (max-width: 800px) {
-            .features-header { padding: 0 20px; }
-            .features-header h2 { font-size: 28px; }
-            .feature-detail-box { flex-direction: column; padding: 30px; margin: 40px 20px 0; gap: 30px; text-align: center;}
-            .detail-left, .detail-right { text-align: center; }
-            .detail-icon { font-size: 60px; margin-bottom: 20px; }
-            .detail-left h3 { font-size: 28px; }
-            .detail-right .tagline { font-size: 16px; }
-            .detail-right .desc { font-size: 14px; }
-            .detail-right .divider { margin: 0 auto 30px; }
-            footer { flex-direction: column; text-align: left; align-items: flex-start; padding: 60px 20px;}
-            .footer-right { text-align: left; margin-top: 20px; }
-            .carousel-track { scroll-padding-inline-start: 10%; padding: 40px 10%;}
-            .feature-item { flex: 0 0 70%; }
-        }
-        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
-    </style>
+    .bottomRight {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+  <script id="splash-screen-script">
+    function removeSplashFromWeb() {
+      document.getElementById("splash")?.remove();
+      document.getElementById("splash-branding")?.remove();
+      document.body.style.background = "transparent";
+    }
+  </script>
 </head>
 <body>
+  <picture id="splash">
+      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+  </picture>
+  
+  <script src="flutter_bootstrap.js" async=""></script>
 
-    <section class="hero container">
-        <i class="fa-solid fa-book-open hero-icon"></i>
-        <h1>GURUDIARY</h1>
-        <h2>The Operating System For Teachers.</h2>
-        <p>We replaced heavy registers and messy diaries with a sleek, offline-first digital console. Experience the future of classroom management.</p>
-        
-        <div class="scroll-hint">
-            <span>SCROLL FOR FEATURES</span>
-            <i class="fa-solid fa-angles-down"></i>
-        </div>
-    </section>
-
-    <section class="features-section">
-        <div class="container features-header">
-            <h2>FEATURES PANEL</h2>
-            <p>Swipe or click to explore deep features.</p>
-        </div>
-        <div class="carousel-track" id="carouselTrack"></div>
-        <div class="feature-detail-box" id="detailBox"></div>
-    </section>
-
-    <section class="install-section container">
-        <h2>SECURE INSTALLATION</h2>
-        
-        <div class="email-capture-box">
-
-            <a href="./app/web/#/student-form" target="_blank" class="action-btn" style="width: 100%; margin-bottom: 15px; background: #fff; border: 2px solid #3f51b5;">
-                <i class="fa-solid fa-user-graduate action-icon" style="color: #3f51b5;"></i>
-                <div class="action-text">
-                    <span class="action-title" style="color: #3f51b5;">Open Student Form</span>
-                    <span class="action-subtitle">Fill your admission details online</span>
-                </div>
-            </a>
-
-            <a href="./app/web/" target="_blank" style="display: block; text-align: center; color: #607d8b; font-weight: 700; text-decoration: none; margin-bottom: 30px; font-size: 13px; transition: 0.3s;">
-                <i class="fa-solid fa-lock" style="font-size: 11px; margin-right: 4px;"></i> Teacher / Admin Login
-            </a>
-
-            <hr style="border: none; border-top: 2px dashed rgba(163, 177, 198, 0.4); margin-bottom: 30px;">
-            <p style="color: #607d8b; font-weight: bold; margin-bottom: 20px; font-size: 15px;">Please enter your email to receive direct download links. A welcome email will be sent to you.</p>
-            
-            <input type="email" id="userEmail" placeholder="e.g. yourname@school.com" required>
-
-            <div class="action-hub">
-                <button class="action-btn" onclick="processDownload('Android')">
-                    <i class="fa-brands fa-android action-icon" style="color: #388e3c;"></i>
-                    <div class="action-text">
-                        <span class="action-title">Get Android App</span>
-                        <span class="action-subtitle">APK File</span>
-                    </div>
-                </button>
-                
-                <button class="action-btn" onclick="processDownload('Windows')">
-                    <i class="fa-brands fa-windows action-icon" style="color: #1976d2;"></i>
-                    <div class="action-text">
-                        <span class="action-title">Get Windows PC</span>
-                        <span class="action-subtitle">EXE Setup</span>
-                    </div>
-                </button>
-            </div>
-
-            <p id="statusMessage" class="status-msg"></p>
-        </div>
-
-        <div class="email-badge">
-            <i class="fa-solid fa-chart-line"></i>
-            <span id="liveCountText">Loading Live Downloads...</span>
-        </div>
-    </section>
-
-    <div id="downloadToast" class="toast">
-        <i class="fa-solid fa-circle-check"></i>
-        <span id="toastMsg">Download Started!</span>
-    </div>
-
-    <section class="story-section">
-        <div class="container">
-            <i class="fa-regular fa-lightbulb" style="color: #18ffff; font-size: 50px;"></i>
-            <h4>WHY WE BUILT GURUDIARY</h4>
-            <p>
-                Teachers spend hours calculating attendance, managing lost papers, and recreating timetables. We realized that existing apps force schools to buy expensive software or steal user data by keeping it on cloud servers.<br><br>
-                GuruDiary was born with a single mission: To give individual teachers a powerful, 100% offline, private digital console. Your data, your device, your control.
-            </p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-left">
-            <h2>GURUDIARY</h2>
-            <p>Official Project Website © 2026</p>
-        </div>
-        <div class="footer-right">
-            <p>Developed with ❤️ by Satish Rangile</p>
-            <a href="#" onclick="showToast('Privacy Policy is currently being updated.')">Privacy Policy & Features</a>
-        </div>
-    </footer>
-
-    <script>
-        // ==========================================
-        // 🔴 GOOGLE SCRIPT & GITHUB LINKS 
-        // ==========================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
-        
-        // Permanent Links
-        const ANDROID_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/app-releaseD.apk";
-        const WINDOWS_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/GuruDiarySetupD.exe";
-        function showToast(message) {
-            const toast = document.getElementById('downloadToast');
-            document.getElementById('toastMsg').innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 4000);
-        }
-
-        window.onload = function() {
-            fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
-            })
-            .catch(err => {
-                document.getElementById("liveCountText").innerText = "Ready for Secure Download";
-            });
-        };
-
-        // 🚀 UPDATED MOBILE-FRIENDLY DOWNLOAD FUNCTION 🚀
-        function processDownload(platform) {
-            const emailInput = document.getElementById("userEmail").value.trim();
-            const statusMsg = document.getElementById("statusMessage");
-
-            if (emailInput === "" || !emailInput.includes("@") || !emailInput.includes(".")) {
-                statusMsg.style.display = "block";
-                statusMsg.style.color = "#d32f2f"; 
-                statusMsg.innerText = "⚠️ Please enter a valid Email Address first!";
-                return;
-            }
-
-            statusMsg.style.display = "block";
-            statusMsg.style.color = "#3f51b5"; 
-            statusMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying & Starting Download...`;
-
-            const formData = new URLSearchParams();
-            formData.append("email", emailInput);
-            formData.append("platform", platform);
-
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData.toString()
-            })
-            .then(res => res.json())
-            .then(data => {
-                statusMsg.style.color = "#388e3c"; 
-                statusMsg.innerText = `✅ Thank You! Check your Email. ${platform} download started!`;
-                document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
-                showToast(`${platform} app download initiated!`);
-
-                // 🌟 FIX FOR MOBILE BROWSERS: Direct window redirection bypasses popup blockers
-                const downloadUrl = platform === "Android" ? ANDROID_LINK : WINDOWS_LINK;
-                window.location.href = downloadUrl; 
-            })
-            .catch(err => {
-                statusMsg.style.color = "#d32f2f";
-                statusMsg.innerText = "⚠️ Network error. Please try again.";
-            });
-        }
-
-        // ==========================================
-        // FEATURES CAROUSEL LOGIC WITH AUTO-PLAY
-        // ==========================================
-        const featuresData = [
-            { title: "Student List", subtitle: "MASTER DIRECTORY", icon: "fa-id-badge", color: "#6D4C41", tagline: "Your Complete Classroom Roster.", desc: "Stop carrying physical student data registers. Manage a local digital database of all your students.", bullets: ["Create and organize individual profiles.", "Quickly search by Name or Roll Number.", "100% offline local storage ensures privacy.", "Seamlessly integrates with Attendance."] },
-            { title: "Attendance", subtitle: "MARK & TRACK", icon: "fa-clipboard-user", color: "#1E88E5", tagline: "Lightning Fast Roll Calls.", desc: "Replace heavy physical registers with a streamlined digital tracker.", bullets: ["Quick tap-to-toggle attendance.", "Filter and view historical records.", "No internet required to mark or view.", "Generate clean, shareable PDF reports."] },
-            { title: "Books", subtitle: "MANAGE LIBRARY", icon: "fa-book", color: "#F4511E", tagline: "Your Personal Logbook.", desc: "Never lose track of the reference books or notes you lend to students or colleagues.", bullets: ["Keep a digital record of all issued books.", "Tag books to specific students.", "Track issue dates and return deadlines.", "Maintain a neat inventory of your library."] },
-            { title: "Timetable", subtitle: "DAILY SCHEDULE", icon: "fa-table-cells", color: "#43A047", tagline: "Your Classic Schedule, Digitized.", desc: "A fully interactive X-Y grid matching standard college formats.", bullets: ["Interactive dual-box time selector.", "Tap any cell to assign Subject and Room.", "Hold a time slot to securely delete it.", "One-click Export to PDF and Excel files."] },
-            { title: "Reminder", subtitle: "NEVER FORGET", icon: "fa-bell", color: "#E53935", tagline: "Your Academic Alarm System.", desc: "From exam duty deadlines to departmental meetings, a teacher's day is packed.", bullets: ["Set direct local reminders for tasks.", "Keep a clean, offline to-do list.", "Prioritize urgent departmental submissions.", "Runs independently without calendar apps."] },
-            { title: "NoteDown", subtitle: "RICH TEXT EDITOR", icon: "fa-file-pen", color: "#8E24AA", tagline: "Draft Lectures. Securely.", desc: "A powerful word processor built right into your console. Write lecture points, draft question papers.", bullets: ["Full Rich-Text Support (Bold, Headers).", "Real-time local saving.", "Clean, distraction-free interface.", "Fully private—nobody else can access it."] },
-            { title: "Holidays", subtitle: "YEARLY CALENDAR", icon: "fa-umbrella-beach", color: "#00897B", tagline: "Plan Your Academic Year.", desc: "Keep the official college holiday calendar in your pocket.", bullets: ["Log official semester holidays.", "Calculate available working days.", "Keep a visual dashboard of off-days.", "Never get confused about local holidays."] }
-        ];
-
-        let currentIndex = 0; 
-        let timer;
-        const track = document.getElementById('carouselTrack');
-        const detailBox = document.getElementById('detailBox');
-
-        function renderTrack() {
-            track.innerHTML = '';
-            featuresData.forEach((f, idx) => {
-                const isActive = idx === currentIndex ? 'active' : '';
-                track.innerHTML += `
-                    <div class="feature-item ${isActive}" onclick="setIndex(${idx})">
-                        <div class="feature-icon-circle" style="color: ${f.color};">
-                            <i class="fa-solid ${f.icon}"></i>
-                        </div>
-                        <h3>${f.title}</h3>
-                        <p class="sub">${f.subtitle}</p>
-                    </div>`;
-            });
-            const activeElem = track.children[currentIndex];
-            if(activeElem) {
-                const scrollLeft = activeElem.offsetLeft - (track.clientWidth / 2) + (activeElem.clientWidth / 2);
-                track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-            }
-        }
-
-        function renderDetail() {
-            const f = featuresData[currentIndex];
-            detailBox.style.opacity = 0; 
-            setTimeout(() => {
-                const bulletsHTML = f.bullets.map(b => `
-                    <div class="bullet-point">
-                        <i class="fa-solid fa-circle-check" style="color: ${f.color};"></i>
-                        <span>${b}</span>
-                    </div>`).join('');
-                detailBox.innerHTML = `
-                    <div class="detail-left">
-                        <i class="fa-solid ${f.icon} detail-icon" style="color: ${f.color};"></i>
-                        <h3>${f.title}</h3>
-                        <h4 style="color: ${f.color};">${f.subtitle}</h4>
-                    </div>
-                    <div class="detail-right">
-                        <div class="tagline">${f.tagline}</div>
-                        <div class="desc">${f.desc}</div>
-                        <div class="divider" style="background-color: ${f.color}80;"></div>
-                        ${bulletsHTML}
-                    </div>`;
-                detailBox.style.opacity = 1; 
-            }, 300); 
-        }
-
-        function setIndex(idx) { 
-            currentIndex = idx; 
-            renderTrack(); 
-            renderDetail(); 
-            resetTimer(); 
-        }
-        
-        function autoScroll() { 
-            currentIndex = (currentIndex + 1) % featuresData.length; 
-            renderTrack(); 
-            renderDetail(); 
-        }
-        
-        function resetTimer() { 
-            clearInterval(timer); 
-            timer = setInterval(autoScroll, 3000); 
-        }
-
-        renderTrack(); 
-        renderDetail(); 
-        resetTimer();
-
-        // Pause Carousel on interaction
-        const pauseCarousel = () => clearInterval(timer);
-        
-        detailBox.addEventListener('mouseenter', pauseCarousel);
-        detailBox.addEventListener('mouseleave', resetTimer);
-        detailBox.addEventListener('touchstart', pauseCarousel);
-        detailBox.addEventListener('touchend', resetTimer);
-
-        track.addEventListener('mouseenter', pauseCarousel);
-        track.addEventListener('mouseleave', resetTimer);
-        track.addEventListener('touchstart', pauseCarousel);
-        track.addEventListener('touchend', resetTimer);
-
-    </script>
 </body>
 </html>
