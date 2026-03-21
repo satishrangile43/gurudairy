@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuruDiary | The Operating System for Teachers</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* 🎨 EXACT FLUTTER VARIABLES */
+        :root {
+            --base-color: #E0E5EC;
+            --dark-shadow: #A3B1C6;
+            --light-shadow: #FFFFFF;
+            --text-main: #2D3436;
+            --text-sub: #607D8B; 
+            --dark-bg: #263238; 
+            --cyan-accent: #18ffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+
+        body { background-color: var(--base-color); color: var(--text-main); overflow-x: hidden; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* 1. HERO SECTION */
+        .hero { padding: 100px 20px 40px; text-align: center; }
+        .hero-icon { font-size: 60px; color: #1a237e; margin-bottom: 20px; }
+        .hero h1 { font-size: clamp(45px, 6vw, 80px); font-weight: 900; color: #1a237e; letter-spacing: 8px; line-height: 1.1; }
+        .hero h2 { font-size: clamp(18px, 3vw, 24px); color: var(--text-main); font-weight: 700; margin-top: 15px; }
+        .hero p { font-size: clamp(14px, 2vw, 18px); color: var(--text-sub); font-weight: 600; line-height: 1.5; max-width: 700px; margin: 20px auto 50px; }
+
+        .scroll-hint { animation: bounce 1s infinite alternate ease-in-out; margin-top: 50px; }
+        .scroll-hint span { font-weight: 900; color: #5c6bc0; letter-spacing: 2px; font-size: 12px; display: block; margin-bottom: 10px; }
+        .scroll-hint i { color: #7986cb; font-size: 30px; }
+
+        /* 2. FEATURES CAROUSEL SECTION */
+        .features-section { padding: 80px 0; }
+        .features-header { padding: 0 50px; }
+        .features-header h2 { font-weight: 900; font-size: 35px; letter-spacing: 3px; color: #37474f; }
+        .features-header p { color: #607d8b; font-weight: bold; font-size: 16px; margin-top: 10px; margin-bottom: 50px; }
+
+        .carousel-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 40px 20px;
+            gap: 20px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .carousel-track::-webkit-scrollbar { display: none; }
+
+        .feature-item {
+            flex: 0 0 250px;
+            scroll-snap-align: center;
+            background: var(--base-color);
+            border-radius: 25px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.5;
+            transform: scale(0.9);
+            box-shadow: 4px 4px 10px rgba(163,177,198,0.3), -4px -4px 10px #fff;
+        }
+        
+        .feature-item.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+        }
+
+        .feature-icon-circle {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: var(--base-color);
+            box-shadow: 2px 2px 4px rgba(163,177,198,0.3), -2px -2px 4px #fff;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 10px;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        .feature-item.active .feature-icon-circle { width: 65px; height: 65px; font-size: 28px; margin-bottom: 20px; }
+        .feature-item h3 { font-weight: 900; font-size: 12px; color: var(--text-main); transition: 0.3s; }
+        .feature-item.active h3 { font-size: 16px; }
+        .feature-item .sub { font-weight: bold; font-size: 10px; color: #90a4ae; margin-top: 5px; display: none; }
+        .feature-item.active .sub { display: block; }
+
+        /* Bottom Detail Box */
+        .feature-detail-box {
+            background: var(--base-color);
+            border-radius: 30px;
+            box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow);
+            padding: 60px;
+            margin: 40px auto 0;
+            max-width: 1000px;
+            display: flex;
+            gap: 60px;
+            align-items: center;
+            transition: opacity 0.4s ease;
+        }
+
+        .detail-left { flex: 2; text-align: right; }
+        .detail-right { flex: 3; text-align: left; }
+        
+        .detail-icon { font-size: 80px; margin-bottom: 40px; }
+        .detail-left h3 { font-size: 35px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
+        .detail-left h4 { font-size: 14px; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
+        
+        .detail-right .tagline { font-size: 24px; font-weight: 900; color: #37474f; margin-bottom: 20px; line-height: 1.3; }
+        .detail-right .desc { font-size: 16px; color: #455a64; line-height: 1.6; margin-bottom: 30px; }
+        .detail-right .divider { height: 2px; width: 50px; background: #cfd8dc; margin-bottom: 30px; }
+        
+        .bullet-point { display: flex; align-items: flex-start; margin-bottom: 15px; }
+        .bullet-point i { font-size: 20px; margin-right: 15px; margin-top: 2px; }
+        .bullet-point span { font-weight: bold; color: #455a64; font-size: 15px; line-height: 1.4; }
+
+        /* 3. INSTALLATION SECTION */
+        .install-section { padding: 80px 20px; text-align: center; }
+        .install-section h2 { font-size: 35px; font-weight: 900; letter-spacing: 2px; color: #2D3436; }
+        .install-section p { color: #607d8b; font-weight: bold; font-size: 16px; margin-top: 15px; margin-bottom: 50px; }
+
+        .action-hub { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+
+        .action-btn {
+            display: flex; align-items: center; width: 320px; padding: 25px;
+            background-color: var(--base-color); border-radius: 20px;
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow);
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .action-btn:hover { transform: scale(1.05); box-shadow: 12px 12px 20px var(--dark-shadow), -12px -12px 20px var(--light-shadow); }
+        .action-btn:active { transform: scale(1.0); box-shadow: none; }
+        .action-icon { font-size: 35px; margin-right: 20px; }
+        .action-text { display: flex; flex-direction: column; text-align: left; }
+        .action-title { font-weight: 900; font-size: 16px; color: #37474f; margin-bottom: 5px; }
+        .action-subtitle { font-weight: bold; font-size: 12px; color: #9e9e9e; }
+
+        /* TOAST NOTIFICATION STYLES */
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2D3436;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-weight: 700;
+            font-size: 15px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast.show { bottom: 40px; }
+        .toast i { color: #00E676; font-size: 20px; }
+
+        /* 4. STORY SECTION */
+        .story-section { background-color: var(--dark-bg); padding: 80px 20px; box-shadow: 0 10px 20px rgba(163, 177, 198, 0.5); text-align: center; }
+        .story-section h4 { color: var(--cyan-accent); font-weight: 900; letter-spacing: 4px; font-size: 16px; margin: 20px 0 30px; }
+        .story-section p { color: rgba(255,255,255,0.9); font-size: clamp(16px, 2vw, 22px); font-weight: 300; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+
+        /* 5. FOOTER */
+        footer { padding: 60px 50px; border-top: 1px solid rgba(163, 177, 198, 0.3); display: flex; justify-content: space-between; align-items: flex-end;}
+        .footer-left h2 { color: #9e9e9e; font-weight: 900; letter-spacing: 5px; margin-bottom: 10px; }
+        .footer-left p { color: #90a4ae; font-size: 12px; }
+        .footer-right { text-align: right; }
+        .footer-right p { color: #607D8B; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .footer-right a { color: #3f51b5; font-weight: bold; text-decoration: none; font-size: 14px; }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 800px) {
+            .features-header { padding: 0 20px; }
+            .features-header h2 { font-size: 28px; }
+            .feature-detail-box { flex-direction: column; padding: 30px; margin: 40px 20px 0; gap: 30px; text-align: center;}
+            .detail-left, .detail-right { text-align: center; }
+            .detail-icon { font-size: 60px; margin-bottom: 20px; }
+            .detail-left h3 { font-size: 28px; }
+            .detail-right .tagline { font-size: 16px; }
+            .detail-right .desc { font-size: 14px; }
+            .detail-right .divider { margin: 0 auto 30px; }
+            footer { flex-direction: column; text-align: left; align-items: flex-start; padding: 60px 20px;}
+            .footer-right { text-align: left; margin-top: 20px; }
+            .carousel-track { scroll-padding-inline-start: 10%; padding: 40px 10%;}
+            .feature-item { flex: 0 0 70%; }
+        }
+
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
+    </style>
+</head>
+<body>
+
+    <section class="hero container">
+        <i class="fa-solid fa-book-open hero-icon"></i>
+        <h1>GURUDIARY</h1>
+        <h2>The Operating System For Teachers.</h2>
+        <p>We replaced heavy registers and messy diaries with a sleek, offline-first digital console. Experience the future of classroom management.</p>
+        
+        <div class="scroll-hint">
+            <span>SCROLL FOR FEATURES</span>
+            <i class="fa-solid fa-angles-down"></i>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container features-header">
+            <h2>FEATURES PANEL</h2>
+            <p>Swipe or click to explore deep features.</p>
+        </div>
+
+        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="feature-detail-box" id="detailBox"></div>
+    </section>
+
+    <section class="install-section container">
+        <h2>INSTALLATION</h2>
+        <p>Download your powerful local console directly to your device.</p>
+
+        <div class="action-hub">
+            <a href="#" class="action-btn" onclick="showToast('Web Console is launching...')">
+                <i class="fa-solid fa-globe action-icon" style="color: #3f51b5;"></i>
+                <div class="action-text">
+                    <span class="action-title">Open Web Console</span>
+                    <span class="action-subtitle">Direct access via browser</span>
+                </div>
+            </a>
+            
+            <a href="https://github.com/satishrangile43/gurudiarymain/releases/download/v1.0.0/app-releaseD.apk" class="action-btn" download onclick="showToast('Android App download started! Welcome to GuruDiary.')">
+                <i class="fa-brands fa-android action-icon" style="color: #388e3c;"></i>
+                <div class="action-text">
+                    <span class="action-title">Download Android</span>
+                    <span class="action-subtitle">Secure & Offline-First</span>
+                </div>
+            </a>
+            
+            <a href="https://github.com/satishrangile43/gurudiarymain/releases/download/v1.0.0/GuruDiary.exe" class="action-btn" download onclick="showToast('Windows Setup download started! Check your downloads folder.')">
+                <i class="fa-brands fa-windows action-icon" style="color: #1976d2;"></i>
+                <div class="action-text">
+                    <span class="action-title">Download Windows</span>
+                    <span class="action-subtitle">Desktop Productivity</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <div id="downloadToast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMsg">Download Started!</span>
+    </div>
+
+    <section class="story-section">
+        <div class="container">
+            <i class="fa-regular fa-lightbulb" style="color: #18ffff; font-size: 50px;"></i>
+            <h4>WHY WE BUILT GURUDIARY</h4>
+            <p>
+                Teachers spend hours calculating attendance, managing lost papers, and recreating timetables. We realized that existing apps force schools to buy expensive software or steal user data by keeping it on cloud servers.<br><br>
+                GuruDiary was born with a single mission: To give individual teachers a powerful, 100% offline, private digital console. Your data, your device, your control.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-left">
+            <h2>GURUDIARY</h2>
+            <p>Official Project Website © 2026</p>
+        </div>
+        <div class="footer-right">
+            <p>Developed with ❤️ by Satish Rangile</p>
+            <a href="#" onclick="showToast('Privacy Policy is currently being updated.')">Privacy Policy & Features</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- TOAST NOTIFICATION LOGIC ---
+        function showToast(message) {
+            const toast = document.getElementById('downloadToast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.add('show');
+            
+            // Hide toast after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // --- FEATURES CAROUSEL LOGIC ---
+        const featuresData = [
+            {
+                title: "Student List", subtitle: "MASTER DIRECTORY", icon: "fa-id-badge", color: "#6D4C41",
+                tagline: "Your Complete Classroom Roster.",
+                desc: "Stop carrying physical student data registers. Manage a local digital database of all your students. Keep track of roll numbers securely on your own device.",
+                bullets: ["Create and organize individual profiles.", "Quickly search by Name or Roll Number.", "100% offline local storage ensures privacy.", "Seamlessly integrates with Attendance."]
+            },
+            {
+                title: "Attendance", subtitle: "MARK & TRACK", icon: "fa-clipboard-user", color: "#1E88E5",
+                tagline: "Lightning Fast Roll Calls.",
+                desc: "Replace heavy physical registers with a streamlined digital tracker. Mark student attendance with a single tap and keep the records safely stored locally.",
+                bullets: ["Quick tap-to-toggle attendance.", "Filter and view historical records.", "No internet required to mark or view.", "Generate clean, shareable PDF reports."]
+            },
+            {
+                title: "Books", subtitle: "MANAGE LIBRARY", icon: "fa-book", color: "#F4511E",
+                tagline: "Your Personal Logbook.",
+                desc: "Never lose track of the reference books or notes you lend to students or colleagues. Keep a clear, digital log of everything you issue from your personal collection.",
+                bullets: ["Keep a digital record of all issued books.", "Tag books to specific students.", "Track issue dates and return deadlines.", "Maintain a neat inventory of your library."]
+            },
+            {
+                title: "Timetable", subtitle: "DAILY SCHEDULE", icon: "fa-table-cells", color: "#43A047",
+                tagline: "Your Classic Schedule, Digitized.",
+                desc: "A fully interactive X-Y grid matching standard college formats. Add time slots, assign subjects and rooms, and manage your entire week at a glance without any paperwork.",
+                bullets: ["Interactive dual-box time selector.", "Tap any cell to assign Subject and Room.", "Hold a time slot to securely delete it.", "One-click Export to PDF and Excel files."]
+            },
+            {
+                title: "Reminder", subtitle: "NEVER FORGET", icon: "fa-bell", color: "#E53935",
+                tagline: "Your Academic Alarm System.",
+                desc: "From exam duty deadlines to departmental meetings, a teacher's day is packed. Set local reminders so you never miss a submission or an important faculty event.",
+                bullets: ["Set direct local reminders for tasks.", "Keep a clean, offline to-do list.", "Prioritize urgent departmental submissions.", "Runs independently without calendar apps."]
+            },
+            {
+                title: "NoteDown", subtitle: "RICH TEXT EDITOR", icon: "fa-file-pen", color: "#8E24AA",
+                tagline: "Draft Lectures. Securely.",
+                desc: "A powerful word processor built right into your console. Write lecture points, draft question papers, and keep your personal academic thoughts perfectly organized.",
+                bullets: ["Full Rich-Text Support (Bold, Headers).", "Real-time local saving.", "Clean, distraction-free interface.", "Fully private—nobody else can access it."]
+            },
+            {
+                title: "Holidays", subtitle: "YEARLY CALENDAR", icon: "fa-umbrella-beach", color: "#00897B",
+                tagline: "Plan Your Academic Year.",
+                desc: "Keep the official college holiday calendar in your pocket. Plan your syllabus coverage and personal leaves efficiently by tracking upcoming long weekends and festivals.",
+                bullets: ["Log official semester holidays.", "Calculate available working days.", "Keep a visual dashboard of off-days.", "Never get confused about local holidays."]
+            }
+        ];
+
+        let currentIndex = 3; 
+        let timer;
+        const track = document.getElementById('carouselTrack');
+        const detailBox = document.getElementById('detailBox');
+
+        function renderTrack() {
+            track.innerHTML = '';
+            featuresData.forEach((f, idx) => {
+                const isActive = idx === currentIndex ? 'active' : '';
+                const itemHTML = `
+                    <div class="feature-item ${isActive}" onclick="setIndex(${idx})">
+                        <div class="feature-icon-circle" style="color: ${f.color};">
+                            <i class="fa-solid ${f.icon}"></i>
+                        </div>
+                        <h3>${f.title}</h3>
+                        <p class="sub">${f.subtitle}</p>
+                    </div>
+                `;
+                track.innerHTML += itemHTML;
+            });
+            const activeElem = track.children[currentIndex];
+            if(activeElem) {
+                const scrollLeft = activeElem.offsetLeft - (track.clientWidth / 2) + (activeElem.clientWidth / 2);
+                track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+            }
+        }
+
+        function renderDetail() {
+            const f = featuresData[currentIndex];
+            detailBox.style.opacity = 0; 
+            
+            setTimeout(() => {
+                const bulletsHTML = f.bullets.map(b => `
+                    <div class="bullet-point">
+                        <i class="fa-solid fa-circle-check" style="color: ${f.color};"></i>
+                        <span>${b}</span>
+                    </div>
+                `).join('');
+
+                detailBox.innerHTML = `
+                    <div class="detail-left">
+                        <i class="fa-solid ${f.icon} detail-icon" style="color: ${f.color};"></i>
+                        <h3>${f.title}</h3>
+                        <h4 style="color: ${f.color};">${f.subtitle}</h4>
+                    </div>
+                    <div class="detail-right">
+                        <div class="tagline">${f.tagline}</div>
+                        <div class="desc">${f.desc}</div>
+                        <div class="divider" style="background-color: ${f.color}80;"></div>
+                        ${bulletsHTML}
+                    </div>
+                `;
+                detailBox.style.opacity = 1; 
+            }, 300); 
+        }
+
+        function setIndex(idx) {
+            currentIndex = idx;
+            renderTrack();
+            renderDetail();
+            resetTimer(); 
+        }
+
+        function autoScroll() {
+            currentIndex = (currentIndex + 1) % featuresData.length;
+            renderTrack();
+            renderDetail();
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timer = setInterval(autoScroll, 4000);
+        }
+
+        renderTrack();
+        renderDetail();
+        resetTimer();
+
+        detailBox.addEventListener('mouseenter', () => clearInterval(timer));
+        detailBox.addEventListener('mouseleave', resetTimer);
+        track.addEventListener('mouseenter', () => clearInterval(timer));
+        track.addEventListener('mouseleave', resetTimer);
+    </script>
+</body>
+</html>
