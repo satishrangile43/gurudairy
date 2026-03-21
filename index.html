@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 🎨 EXACT FLUTTER VARIABLES */
         :root {
             --base-color: #E0E5EC;
             --dark-shadow: #A3B1C6;
@@ -214,6 +213,7 @@
         // ==========================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
         
+        // Permanent Links
         const ANDROID_LINK = "https://github.com/satishrangile43/gurudiarymain/releases/download/v1.0.0/app-releaseD.apk";
         const WINDOWS_LINK = "https://github.com/satishrangile43/gurudiary/releases/download/GURUDIARY/GuruDiarySetupD.exe";
 
@@ -235,6 +235,7 @@
             });
         };
 
+        // 🚀 UPDATED MOBILE-FRIENDLY DOWNLOAD FUNCTION 🚀
         function processDownload(platform) {
             const emailInput = document.getElementById("userEmail").value.trim();
             const statusMsg = document.getElementById("statusMessage");
@@ -266,12 +267,9 @@
                 document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
                 showToast(`${platform} app download initiated!`);
 
-                const link = document.createElement("a");
-                link.href = platform === "Android" ? ANDROID_LINK : WINDOWS_LINK;
-                link.setAttribute("download", "");
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
+                // 🌟 FIX FOR MOBILE BROWSERS: Direct window redirection bypasses popup blockers
+                const downloadUrl = platform === "Android" ? ANDROID_LINK : WINDOWS_LINK;
+                window.location.href = downloadUrl; 
             })
             .catch(err => {
                 statusMsg.style.color = "#d32f2f";
@@ -357,15 +355,14 @@
         
         function resetTimer() { 
             clearInterval(timer); 
-            timer = setInterval(autoScroll, 3000); // 🕒 Every 3 seconds
+            timer = setInterval(autoScroll, 3000); 
         }
 
-        // Initialize Carousel
         renderTrack(); 
         renderDetail(); 
         resetTimer();
 
-        // 🛑 PAUSE ON HOVER OR TOUCH (Smart Interaction)
+        // Pause Carousel on interaction
         const pauseCarousel = () => clearInterval(timer);
         
         detailBox.addEventListener('mouseenter', pauseCarousel);
