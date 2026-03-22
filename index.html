@@ -9,6 +9,53 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- Naya Animation Code --- */
+
+        /* 1. Background Blobs jo randomly ghumenge aur Color change karenge */
+        .bg-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(24, 255, 255, 0.2) 0%, rgba(224, 229, 236, 0) 70%);
+            filter: blur(80px);
+            z-index: -1;
+            border-radius: 50%;
+            animation: moveBlobs 20s infinite alternate ease-in-out;
+            transition: background 1.5s ease; /* Color change animation */
+        }
+
+        @keyframes moveBlobs {
+            0% { transform: translate(-10%, -10%) scale(1); }
+            50% { transform: translate(60%, 40%) scale(1.2); }
+            100% { transform: translate(-20%, 80%) scale(0.8); }
+        }
+
+        /* 2. Floating Effect for Cards & Icons */
+        .hero-icon, .feature-item, .action-btn, .email-capture-box {
+            animation: floatElement 4s infinite ease-in-out;
+        }
+
+        @keyframes floatElement {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        /* 3. Shimmer Effect (Chamkan) jo cards par move karegi */
+        .feature-item.active::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+        
         :root {
             --base-color: #E0E5EC;
             --dark-shadow: #A3B1C6;
@@ -42,8 +89,16 @@
         .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 40px 20px; gap: 20px; -ms-overflow-style: none; scrollbar-width: none; }
         .carousel-track::-webkit-scrollbar { display: none; }
 
-        .feature-item { flex: 0 0 250px; scroll-snap-align: center; background: var(--base-color); border-radius: 25px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.5; transform: scale(0.9); box-shadow: 4px 4px 10px rgba(163,177,198,0.3), -4px -4px 10px #fff; }
+        .feature-item { flex: 0 0 250px; scroll-snap-align: center; background: var(--base-color); border-radius: 25px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.5; transform: scale(0.9); box-shadow: 4px 4px 10px rgba(163,177,198,0.3), -4px -4px 10px #fff; position: relative; overflow: hidden; }
+        
+        /* Hover Effect */
+        .feature-item:hover { transform: scale(1.1) translateY(-10px) !important; opacity: 1 !important; box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow); z-index: 10; }
         .feature-item.active { opacity: 1; transform: scale(1.05); box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow); }
+        
+        /* NEW: Progress Bar inside active card */
+        .progress-line { height: 4px; width: 0%; border-radius: 2px; margin-top: 15px; opacity: 0; transition: width 2.5s linear; }
+        .feature-item.active .progress-line { opacity: 1; width: 100%; }
+
         .feature-icon-circle { width: 50px; height: 50px; border-radius: 50%; background: var(--base-color); box-shadow: 2px 2px 4px rgba(163,177,198,0.3), -2px -2px 4px #fff; display: flex; justify-content: center; align-items: center; margin: 0 auto 10px; font-size: 20px; transition: all 0.3s; }
         .feature-item.active .feature-icon-circle { width: 65px; height: 65px; font-size: 28px; margin-bottom: 20px; }
         .feature-item h3 { font-weight: 900; font-size: 12px; color: var(--text-main); transition: 0.3s; }
@@ -51,7 +106,12 @@
         .feature-item .sub { font-weight: bold; font-size: 10px; color: #90a4ae; margin-top: 5px; display: none; }
         .feature-item.active .sub { display: block; }
 
-        .feature-detail-box { background: var(--base-color); border-radius: 30px; box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow); padding: 60px; margin: 40px auto 0; max-width: 1000px; display: flex; gap: 60px; align-items: center; transition: opacity 0.4s ease; }
+        .feature-detail-box { background: var(--base-color); border-radius: 30px; box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow); padding: 60px; margin: 40px auto 0; max-width: 1000px; display: flex; gap: 60px; align-items: center; transition: opacity 0.2s ease; overflow: hidden;}
+        
+        /* NEW: Slide Up Animation */
+        .detail-animate { display: flex; gap: 60px; width: 100%; align-items: center; animation: slideUpFade 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
+
         .detail-left { flex: 2; text-align: right; }
         .detail-right { flex: 3; text-align: left; }
         .detail-icon { font-size: 80px; margin-bottom: 40px; }
@@ -73,7 +133,10 @@
 
         .action-hub { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
         .action-btn { display: flex; align-items: center; width: 250px; padding: 25px; background-color: var(--base-color); border-radius: 20px; border: none; box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); text-decoration: none; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
-        .action-btn:hover { transform: scale(1.05); box-shadow: 12px 12px 20px var(--dark-shadow), -12px -12px 20px var(--light-shadow); }
+        
+        /* NEW: Button press animation */
+        .action-btn:active { transform: scale(0.95) !important; box-shadow: inset 6px 6px 12px var(--dark-shadow), inset -6px -6px 12px var(--light-shadow) !important; animation: none; }
+
         .action-icon { font-size: 35px; margin-right: 20px; }
         .action-text { display: flex; flex-direction: column; text-align: left; }
         .action-title { font-weight: 900; font-size: 15px; color: #37474f; margin-bottom: 5px; }
@@ -118,11 +181,14 @@
             .footer-right { text-align: left; margin-top: 20px; }
             .carousel-track { scroll-padding-inline-start: 10%; padding: 40px 10%;}
             .feature-item { flex: 0 0 70%; }
+            .detail-animate { flex-direction: column; text-align: center; }
         }
         @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
     </style>
 </head>
 <body>
+    <div class="bg-blob" id="blob1" style="top: -10%; left: -10%;"></div>
+    <div class="bg-blob" id="blob2" style="animation-delay: -10s; bottom: -10%; right: -10%;"></div>
 
     <section class="hero container">
         <i class="fa-solid fa-book-open hero-icon"></i>
@@ -149,7 +215,6 @@
         <h2>SECURE INSTALLATION</h2>
         
         <div class="email-capture-box">
-
             <a href="https://satishrangile43.github.io/gurudairy/app/web/" target="_blank" class="action-btn" style="width: 100%; margin-bottom: 30px; background: #fff; border: 2px solid #3f51b5;">
                 <i class="fa-solid fa-globe action-icon" style="color: #3f51b5;"></i>
                 <div class="action-text">
@@ -219,13 +284,13 @@
 
     <script>
         // ==========================================
-        // 🔴 GOOGLE SCRIPT & GITHUB LINKS 
+        // 🔴 GOOGLE SCRIPT & GITHUB LINKS (UNTOUCHED)
         // ==========================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
         
-        // Permanent Links
         const ANDROID_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/app-releaseD.apk";
         const WINDOWS_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/GuruDiarySetupD.exe";
+        
         function showToast(message) {
             const toast = document.getElementById('downloadToast');
             document.getElementById('toastMsg').innerText = message;
@@ -244,7 +309,6 @@
             });
         };
 
-        // 🚀 UPDATED MOBILE-FRIENDLY DOWNLOAD FUNCTION 🚀
         function processDownload(platform) {
             const emailInput = document.getElementById("userEmail").value.trim();
             const statusMsg = document.getElementById("statusMessage");
@@ -276,7 +340,6 @@
                 document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
                 showToast(`${platform} app download initiated!`);
 
-                // 🌟 FIX FOR MOBILE BROWSERS: Direct window redirection bypasses popup blockers
                 const downloadUrl = platform === "Android" ? ANDROID_LINK : WINDOWS_LINK;
                 window.location.href = downloadUrl; 
             })
@@ -287,7 +350,7 @@
         }
 
         // ==========================================
-        // FEATURES CAROUSEL LOGIC WITH AUTO-PLAY
+        // 🚀 UPGRADED FEATURES CAROUSEL LOGIC
         // ==========================================
         const featuresData = [
             { title: "Student List", subtitle: "MASTER DIRECTORY", icon: "fa-id-badge", color: "#6D4C41", tagline: "Your Complete Classroom Roster.", desc: "Stop carrying physical student data registers. Manage a local digital database of all your students.", bullets: ["Create and organize individual profiles.", "Quickly search by Name or Roll Number.", "100% offline local storage ensures privacy.", "Seamlessly integrates with Attendance."] },
@@ -300,7 +363,7 @@
         ];
 
         let currentIndex = 0; 
-        let timer;
+        let masterTimer = null; 
         const track = document.getElementById('carouselTrack');
         const detailBox = document.getElementById('detailBox');
 
@@ -315,6 +378,7 @@
                         </div>
                         <h3>${f.title}</h3>
                         <p class="sub">${f.subtitle}</p>
+                        <div class="progress-line" style="background-color: ${f.color};"></div>
                     </div>`;
             });
             const activeElem = track.children[currentIndex];
@@ -326,64 +390,86 @@
 
         function renderDetail() {
             const f = featuresData[currentIndex];
-            detailBox.style.opacity = 0; 
+            
+            // Magic: Background blob colors change dynamically
+            document.getElementById('blob1').style.background = `radial-gradient(circle, ${f.color}33 0%, transparent 70%)`;
+            document.getElementById('blob2').style.background = `radial-gradient(circle, ${f.color}22 0%, transparent 70%)`;
+
+            // Reset box to trigger animation
+            detailBox.innerHTML = ''; 
+            
             setTimeout(() => {
                 const bulletsHTML = f.bullets.map(b => `
                     <div class="bullet-point">
                         <i class="fa-solid fa-circle-check" style="color: ${f.color};"></i>
                         <span>${b}</span>
                     </div>`).join('');
+                
                 detailBox.innerHTML = `
-                    <div class="detail-left">
-                        <i class="fa-solid ${f.icon} detail-icon" style="color: ${f.color};"></i>
-                        <h3>${f.title}</h3>
-                        <h4 style="color: ${f.color};">${f.subtitle}</h4>
-                    </div>
-                    <div class="detail-right">
-                        <div class="tagline">${f.tagline}</div>
-                        <div class="desc">${f.desc}</div>
-                        <div class="divider" style="background-color: ${f.color}80;"></div>
-                        ${bulletsHTML}
+                    <div class="detail-animate">
+                        <div class="detail-left">
+                            <i class="fa-solid ${f.icon} detail-icon" style="color: ${f.color}; filter: drop-shadow(5px 5px 10px rgba(163,177,198,0.8));"></i>
+                            <h3>${f.title}</h3>
+                            <h4 style="color: ${f.color};">${f.subtitle}</h4>
+                        </div>
+                        <div class="detail-right">
+                            <div class="tagline">${f.tagline}</div>
+                            <div class="desc">${f.desc}</div>
+                            <div class="divider" style="background-color: ${f.color}80;"></div>
+                            ${bulletsHTML}
+                        </div>
                     </div>`;
-                detailBox.style.opacity = 1; 
-            }, 300); 
+            }, 50); 
         }
 
-        function setIndex(idx) { 
-            currentIndex = idx; 
-            renderTrack(); 
-            renderDetail(); 
-            resetTimer(); 
-        }
-        
         function autoScroll() { 
             currentIndex = (currentIndex + 1) % featuresData.length; 
             renderTrack(); 
             renderDetail(); 
         }
-        
-        function resetTimer() { 
-            clearInterval(timer); 
-            timer = setInterval(autoScroll, 3000); 
+
+        function startFlow() {
+            if (masterTimer) clearInterval(masterTimer); 
+            renderTrack(); // Reset progress line
+            masterTimer = setInterval(autoScroll, 2500); 
         }
 
-        renderTrack(); 
+        function stopFlow() {
+            clearInterval(masterTimer);
+            masterTimer = null;
+            // Freeze progress line length
+            const activeLine = document.querySelector('.feature-item.active .progress-line');
+            if(activeLine) {
+                activeLine.style.width = activeLine.offsetWidth + 'px';
+                activeLine.style.transition = 'none';
+            }
+        }
+
+        function setIndex(idx) { 
+            currentIndex = idx; 
+            renderDetail(); 
+            startFlow(); 
+        }
+
+        // Mouse Hover Logic (Clean)
+        track.addEventListener('mouseenter', stopFlow);
+        track.addEventListener('mouseleave', startFlow);
+        detailBox.addEventListener('mouseenter', stopFlow);
+        detailBox.addEventListener('mouseleave', startFlow);
+        track.addEventListener('touchstart', stopFlow);
+        track.addEventListener('touchend', startFlow);
+
+        // EXTRA: Mouse Parallax for Blobs
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            document.getElementById('blob1').style.transform = `translate(${x}px, ${y}px)`;
+            document.getElementById('blob2').style.transform = `translate(${-x}px, ${-y}px)`;
+        });
+
+        // INITIAL START
         renderDetail(); 
-        resetTimer();
-
-        // Pause Carousel on interaction
-        const pauseCarousel = () => clearInterval(timer);
-        
-        detailBox.addEventListener('mouseenter', pauseCarousel);
-        detailBox.addEventListener('mouseleave', resetTimer);
-        detailBox.addEventListener('touchstart', pauseCarousel);
-        detailBox.addEventListener('touchend', resetTimer);
-
-        track.addEventListener('mouseenter', pauseCarousel);
-        track.addEventListener('mouseleave', resetTimer);
-        track.addEventListener('touchstart', pauseCarousel);
-        track.addEventListener('touchend', resetTimer);
-
+        startFlow(); 
     </script>
 </body>
 </html>
