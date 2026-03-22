@@ -218,8 +218,8 @@
             <a href="https://satishrangile43.github.io/gurudairy/app/web/" target="_blank" class="action-btn" style="width: 100%; margin-bottom: 30px; background: #fff; border: 2px solid #3f51b5;">
                 <i class="fa-solid fa-globe action-icon" style="color: #3f51b5;"></i>
                 <div class="action-text">
-                    <span class="action-title" style="color: #3f51b5;">Open Web Portal</span>
-                    <span class="action-subtitle">Access GuruDiary via Browser</span>
+                    <span class="action-title" style="color: #3f51b5;">Try Demo Web App</span>
+                    <span class="action-subtitle">No Installation Required</span>
                 </div>
             </a>
 
@@ -233,7 +233,7 @@
                     <i class="fa-brands fa-android action-icon" style="color: #388e3c;"></i>
                     <div class="action-text">
                         <span class="action-title">Get Android App</span>
-                        <span class="action-subtitle">APK File</span>
+                        <span class="action-subtitle">APK File (v<span id="ui-android-ver">1.0</span>)</span>
                     </div>
                 </button>
                 
@@ -241,7 +241,7 @@
                     <i class="fa-brands fa-windows action-icon" style="color: #1976d2;"></i>
                     <div class="action-text">
                         <span class="action-title">Get Windows PC</span>
-                        <span class="action-subtitle">EXE Setup</span>
+                        <span class="action-subtitle">EXE Setup (v<span id="ui-win-ver">1.0</span>)</span>
                     </div>
                 </button>
             </div>
@@ -284,12 +284,25 @@
 
     <script>
         // ==========================================
-        // 🔴 GOOGLE SCRIPT & GITHUB LINKS (UNTOUCHED)
+        // 🛠️ UPDATE SETTINGS (NEW VERSION YAHAN DALEIN)
         // ==========================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
+        // Jab bhi naya version aaye, sirf yahan number change karein!
+        const APP_VERSION = "1.0"; 
         
+        // UI mein version number update karne ka code (Ise mat chhedna)
+        document.getElementById("ui-android-ver").innerText = APP_VERSION;
+        document.getElementById("ui-win-ver").innerText = APP_VERSION;
+
+        // Agar download file ka naam badal jaye, toh in links ko update karein:
         const ANDROID_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/app-releaseD.apk";
         const WINDOWS_LINK = "https://github.com/satishrangile43/gurudairy/releases/download/v1.0/GuruDiarySetupD.exe";
+        // ==========================================
+
+
+        // ==========================================
+        // 🔴 GOOGLE SCRIPT & LOGIC
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
         
         function showToast(message) {
             const toast = document.getElementById('downloadToast');
