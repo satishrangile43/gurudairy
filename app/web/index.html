@@ -1,113 +1,235 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <base href="/gurudairy/app/web/">
+// ==========================================
+// 1. CORE IMPORTS
+// ==========================================
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="GuruDiary Web Portal - The Operating System for Teachers.">
+// 🔥 NAYA IMPORT: URL STRATEGY (Web Routing Fix)
+import 'package:flutter_web_plugins/url_strategy.dart'; 
 
-  <meta name="google-signin-client_id" content="492043149131-mellrh8sv5h99tc7h4bugpffffa5ke42.apps.googleusercontent.com">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="gurudiary">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+// ==========================================
+// 2. THIRD-PARTY PACKAGES
+// ==========================================
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:google_sign_in_dartio/google_sign_in_dartio.dart';
+import 'package:permission_handler/permission_handler.dart'; 
 
-  <link rel="icon" type="image/png" href="favicon.png">
+// ==========================================
+// 3. LOCAL IMPORTS
+// ==========================================
+import 'firebase_options.dart';
+import 'screens/hostel/hostel_dashboard_screen.dart';
+import 'screens/hostel/hostel_login_screen.dart';
+import 'screens/auth/app_lock_screen.dart';
+import 'database/hive_service.dart';
+import 'screens/hostel/form.dart'; 
 
-  <title>GuruDiary Web</title>
-  <link rel="manifest" href="manifest.json">
-  
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-  
-  <style id="splash-screen-style">
-    html {
-      height: 100%
-    }
+// ==========================================
+// 4. DESKTOP/LAPTOP SCROLL FIX
+// ==========================================
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
+}
 
-    body {
-      margin: 0;
-      min-height: 100%;
-      background-color: #E0E5EC;
-          background-size: 100% 100%;
-    }
+// ==========================================
+// 5. APP INITIALIZATION & MAIN ENTRY
+// ==========================================
+void main() async {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-    .center {
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-    }
+    // 🔥 WEB ROUTING FIX: Guarantee Hash URL Strategy for GitHub Pages
+    useHashUrlStrategy(); 
 
-    .contain {
-      display:block;
-      width:100%; height:100%;
-      object-fit: contain;
-    }
-
-    .stretch {
-      display:block;
-      width:100%; height:100%;
-    }
-
-    .cover {
-      display:block;
-      width:100%; height:100%;
-      object-fit: cover;
-    }
-
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      -ms-transform: translate(-50%, 0);
-      transform: translate(-50%, 0);
-    }
-
-    .bottomLeft {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .bottomRight {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-  </style>
-  <script id="splash-screen-script">
-    function removeSplashFromWeb() {
-      document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
-      document.body.style.background = "transparent";
-    }
-  </script>
-
-  <script>
-    // Right-click disable karne ke liye
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    // Keyboard shortcuts (F12, Ctrl+U, Ctrl+Shift+I/J/C) block karne ke liye
-    document.onkeydown = function(e) {
-      if (e.keyCode == 123) return false; // F12 Block
-      if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Inspect Element Block
-      if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Element Selector Block
-      if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Console Block
-      if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // View Source Block
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      debugPrint("🚨 [App Error]: ${details.exceptionAsString()}");
     };
-  </script>
-  </head>
-<body>
-  <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
-  </picture>
-  
-  <script src="flutter_bootstrap.js" async=""></script>
 
-</body>
-</html>
+    if (!kIsWeb && Platform.isWindows) {
+      await GoogleSignInDart.register(
+        clientId:
+            '330749254136-igrbd9284ddpcoqqcuej16go1f6o3op6.apps.googleusercontent.com',
+      );
+    }
+
+    await Future.wait([
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+      HiveService.initHive(),
+    ]);
+
+    runApp(const GuruDiary());
+  }, (error, stack) {
+    debugPrint("🚨 [Async Error Caught]: $error");
+  });
+}
+
+// ==========================================
+// 6. ROOT WIDGET
+// ==========================================
+class GuruDiary extends StatefulWidget {
+  const GuruDiary({super.key});
+
+  @override
+  State<GuruDiary> createState() => _GuruDiaryState();
+}
+
+class _GuruDiaryState extends State<GuruDiary> with WidgetsBindingObserver {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _requestCorePermissions();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _requestCorePermissions() async {
+    if (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux) return;
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      PermissionStatus status = await Permission.notification.status;
+      if (status.isDenied || status.isProvisional) {
+        await Permission.notification.request();
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    var box = Hive.box('settings_box');
+
+    if (state == AppLifecycleState.paused) {
+      box.put('last_background_time', DateTime.now().millisecondsSinceEpoch);
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      if (box.get('is_bio_popup_open', defaultValue: false)) return;
+
+      String savedPin = box.get('app_secret_pin', defaultValue: "");
+      if (savedPin.isEmpty) return;
+
+      int lastTime = box.get('last_background_time', defaultValue: 0);
+      int timeoutMinutes = box.get('lock_timeout_mins', defaultValue: 0); 
+
+      if (lastTime != 0) {
+        DateTime lastDate = DateTime.fromMillisecondsSinceEpoch(lastTime);
+        Duration difference = DateTime.now().difference(lastDate);
+
+        if (difference.inMinutes >= timeoutMinutes) {
+          _showLockOverlay();
+        }
+      }
+    }
+  }
+
+  void _showLockOverlay() {
+    // 🔥 WEB FORM SAFEGUARD: Web par admission form bharte waqt app lock nahi lagega!
+    if (kIsWeb && Uri.base.toString().contains('student-form')) {
+      return;
+    }
+
+    bool isAlreadyLocked = false;
+    navigatorKey.currentState?.popUntil((route) {
+      if (route.settings.name == '/lock_overlay' ||
+          route.settings.name == '/pin') {
+        isAlreadyLocked = true;
+      }
+      return true;
+    });
+
+    if (!isAlreadyLocked) {
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: '/lock_overlay'),
+          builder: (context) =>
+              const AppLockScreen(isOverlay: true), 
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      title: 'Guru Diary',
+      debugShowCheckedModeBanner: false,
+      scrollBehavior: MyCustomScrollBehavior(),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo,
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xffF4F7F6),
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          centerTitle: false,
+          backgroundColor: Colors.indigo.shade800,
+          foregroundColor: Colors.white,
+          titleTextStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('hi', 'IN'),
+      ],
+
+      // 🔥 ROUTES SETUP
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AppLockScreen(isOverlay: false),
+        '/hostel_auth': (context) => const AuthGatekeeper(),
+        '/student-form': (context) => const StudentAdmissionForm(),
+      },
+    );
+  }
+}
+
+class AuthGatekeeper extends StatelessWidget {
+  const AuthGatekeeper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator(color: Colors.indigo)),
+          );
+        }
+        if (snapshot.hasData) {
+          return const HostelDashboardScreen();
+        }
+        return const HostelLoginScreen();
+      },
+    );
+  }
+}
