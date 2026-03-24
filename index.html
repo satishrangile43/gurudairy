@@ -3,298 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuruDiary | The Operating System for Teachers</title>
+    <title>GuruDiary | The Spatial Console</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- UPGRADED ANIMATION CODE --- */
-
-        /* 1. Background Blobs */
-        .bg-blob {
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(24, 255, 255, 0.2) 0%, rgba(224, 229, 236, 0) 70%);
-            filter: blur(80px);
-            z-index: -1;
-            border-radius: 50%;
-            animation: moveBlobs 20s infinite alternate ease-in-out;
-            transition: background 1.5s ease;
+        :root {
+            /* Mac Bright & Glossy Variables */
+            --bg-bright: #f5f5f7; 
+            --glass: rgba(255, 255, 255, 0.65); 
+            --border: rgba(255, 255, 255, 0.9);
+            --text-main: #1d1d1f; 
+            --text-sub: #86868b;
+            --app-blue: #007aff;
+            --app-green: #34c759;
+            --app-purple: #5856d6;
         }
 
-        /* STEP 4: Mobile Lag Fix (Disable Heavy Blobs on Low-end) 📱 */
-        @media (max-width: 600px) {
-            .bg-blob {
-                display: none;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-bright); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            perspective: 1500px;
+        }
+
+        /* --- THE DYNAMIC AMBIENT BACKGROUND --- */
+        .ambient-engine {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 10%, rgba(0, 122, 255, 0.08) 0px, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(88, 86, 214, 0.06) 0px, transparent 40%),
+                radial-gradient(circle at 50% 85%, rgba(52, 199, 89, 0.05) 0px, transparent 40%);
+            animation: bgShift 25s infinite alternate linear;
+        }
+        @keyframes bgShift {
+            from { transform: scale(1); }
+            to { transform: scale(1.1) translate(15px, 15px); }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- THE GLOSSY SPATIAL GLASS ENGINE --- */
+        .spatial-glass {
+            background: var(--glass);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 35px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.03),
+                inset 0 0 15px rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+        }
+
+        .spatial-glass::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 35px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.8;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .spatial-glass::before {
+            content: "";
+            position: absolute;
+            top: -100%; left: -100%; width: 50%; height: 300%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg);
+            transition: 0.8s;
+            pointer-events: none;
+        }
+
+        /* Desktop Hover effects */
+        @media (min-width: 769px) {
+            .spatial-glass:hover::before { left: 200%; }
+            .spatial-glass:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 30px 60px rgba(0,0,0,0.06), inset 0 0 20px rgba(255,255,255,1);
             }
         }
 
-        @keyframes moveBlobs {
-            0% { transform: translate(-10%, -10%) scale(1); }
-            50% { transform: translate(60%, 40%) scale(1.2); }
-            100% { transform: translate(-20%, 80%) scale(0.8); }
+        /* --- TACTILE HUD ELEMENT --- */
+        .hud-display {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 
+                inset 4px 4px 10px rgba(0,0,0,0.04), 
+                inset -4px -4px 10px rgba(255,255,255,1);
+            border: 1px solid rgba(255,255,255,0.5);
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* 2. Floating Effect */
-        .hero-icon, .feature-item, .action-btn, .email-capture-box {
-            animation: floatElement 4s infinite ease-in-out;
+        /* --- HERO AREA --- */
+        .hero { padding: 120px 0 60px; text-align: center; }
+        .system-pill {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #fff; color: var(--text-main);
+            padding: 8px 24px; border-radius: 100px;
+            font-size: 12px; font-weight: 800; letter-spacing: 2px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        @keyframes floatElement {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+        h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(35px, 8vw, 85px); font-weight: 700; letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px; }
+        h1 span { 
+            background: linear-gradient(180deg, var(--app-blue), var(--app-purple)); 
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent; 
         }
+        .hero-p { font-size: clamp(16px, 4vw, 18px); color: var(--text-sub); max-width: 650px; margin: 0 auto 30px; font-weight: 500; line-height: 1.6; }
 
-        /* 3. Shimmer Effect */
-        .feature-item.active::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 3s infinite;
+        /* BUTTONS */
+        .btn-action {
+            padding: 16px 35px;
+            background: var(--app-blue);
+            color: #fff;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 15px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+            box-shadow: 0 10px 25px rgba(0, 122, 255, 0.3);
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            width: auto;
         }
-
-        @keyframes shimmer {
-            0% { left: -150%; }
-            100% { left: 150%; }
-        }
+        .btn-action:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 35px rgba(0, 122, 255, 0.4); background: #006ce4; }
         
-        :root {
-            --base-color: #E0E5EC;
-            --dark-shadow: #A3B1C6;
-            --light-shadow: #FFFFFF;
-            --text-main: #2D3436;
-            --text-sub: #607D8B; 
-            --dark-bg: #263238; 
-            --cyan-accent: #18ffff;
+        .btn-dark { background: var(--text-main); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .btn-dark:hover { background: #000; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+
+        /* --- CAROUSEL TRACK --- */
+        .features-section { padding: 40px 0; }
+        .carousel-track { 
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
+            scroll-behavior: smooth; padding: 20px 10px; gap: 15px; 
+            -ms-overflow-style: none; scrollbar-width: none; 
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
-        body { background-color: var(--base-color); color: var(--text-main); overflow-x: hidden; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-        /* HERO SECTION */
-        .hero { padding: 100px 20px 40px; text-align: center; }
-        .hero-icon { font-size: 60px; color: #1a237e; margin-bottom: 20px; }
-        .hero h1 { font-size: clamp(45px, 6vw, 80px); font-weight: 900; color: #1a237e; letter-spacing: 8px; line-height: 1.1; }
-        .hero h2 { font-size: clamp(18px, 3vw, 24px); color: var(--text-main); font-weight: 700; margin-top: 15px; }
-        .hero p { font-size: clamp(14px, 2vw, 18px); color: var(--text-sub); font-weight: 600; line-height: 1.5; max-width: 700px; margin: 20px auto 50px; }
-        .scroll-hint { animation: bounce 1s infinite alternate ease-in-out; margin-top: 50px; }
-        .scroll-hint span { font-weight: 900; color: #5c6bc0; letter-spacing: 2px; font-size: 12px; display: block; margin-bottom: 10px; }
-        .scroll-hint i { color: #7986cb; font-size: 30px; }
-
-        /* FEATURES SECTION */
-        .features-section { padding: 80px 0; }
-        .features-header { padding: 0 50px; text-align: center;}
-        .features-header h2 { font-weight: 900; font-size: 35px; letter-spacing: 3px; color: #37474f; }
-        .features-header p { color: #607d8b; font-weight: bold; font-size: 16px; margin-top: 10px; margin-bottom: 50px; }
-
-        .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 40px 20px; gap: 20px; -ms-overflow-style: none; scrollbar-width: none; }
         .carousel-track::-webkit-scrollbar { display: none; }
 
-        .feature-item { flex: 0 0 250px; scroll-snap-align: center; background: var(--base-color); border-radius: 25px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.5; transform: scale(0.9); box-shadow: 4px 4px 10px rgba(163,177,198,0.3), -4px -4px 10px #fff; position: relative; overflow: hidden; }
+        .feature-item { 
+            flex: 0 0 220px; scroll-snap-align: center; 
+            background: rgba(255,255,255,0.5); border-radius: 25px; 
+            padding: 20px; text-align: center; cursor: pointer; 
+            transition: all 0.4s; 
+            opacity: 0.6; transform: scale(0.9); 
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            backdrop-filter: blur(20px);
+        }
         
-        .feature-item:hover { transform: scale(1.1) translateY(-10px) !important; opacity: 1 !important; box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow); z-index: 10; }
-        .feature-item.active { opacity: 1; transform: scale(1.05); box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow); }
+        .feature-item:hover { transform: scale(1.02); opacity: 0.9; }
+        .feature-item.active { 
+            opacity: 1; transform: scale(1.05); 
+            background: rgba(255,255,255,0.9);
+            border-color: #fff;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+        }
+
+        .feature-icon-circle { 
+            width: 50px; height: 50px; border-radius: 15px; 
+            background: #fff; 
+            box-shadow: 0 5px 12px rgba(0,0,0,0.04); 
+            display: flex; justify-content: center; align-items: center; 
+            margin: 0 auto 15px; font-size: 20px; transition: all 0.3s; 
+        }
+        .feature-item.active .feature-icon-circle { transform: scale(1.1); }
         
-        .progress-line { height: 4px; width: 0%; border-radius: 2px; margin-top: 15px; opacity: 0; transition: width 3.5s linear; }
-        .feature-item.active .progress-line { opacity: 1; width: 100%; }
+        .feature-item h3 { font-weight: 800; font-size: 14px; color: var(--text-main); }
+        .feature-item .sub { font-weight: 700; font-size: 10px; color: var(--text-sub); margin-top: 4px; opacity: 0; transition: 0.3s; }
+        .feature-item.active .sub { opacity: 1; }
 
-        .feature-icon-circle { width: 50px; height: 50px; border-radius: 50%; background: var(--base-color); box-shadow: 2px 2px 4px rgba(163,177,198,0.3), -2px -2px 4px #fff; display: flex; justify-content: center; align-items: center; margin: 0 auto 10px; font-size: 20px; transition: all 0.3s; }
-        .feature-item.active .feature-icon-circle { width: 65px; height: 65px; font-size: 28px; margin-bottom: 20px; }
-        .feature-item h3 { font-weight: 900; font-size: 12px; color: var(--text-main); transition: 0.3s; }
-        .feature-item.active h3 { font-size: 16px; }
-        .feature-item .sub { font-weight: bold; font-size: 10px; color: #90a4ae; margin-top: 5px; display: none; }
-        .feature-item.active .sub { display: block; }
-
-        .feature-detail-box { background: var(--base-color); border-radius: 30px; box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow); padding: 60px; margin: 40px auto 0; max-width: 1000px; display: flex; gap: 60px; align-items: center; transition: opacity 0.2s ease; overflow: hidden;}
+        /* --- FEATURE DETAIL BOX (🔥 FULLY FLUID & RESPONSIVE FIX) --- */
+        .feature-detail-box { 
+            margin: 20px auto 60px; max-width: 1050px; 
+            padding: 50px 60px; 
+            display: flex; align-items: center; justify-content: center;
+            min-height: 400px; /* Provides a base height so it doesn't collapse */
+            transition: transform 0.1s ease-out; 
+            position: relative; 
+        }
         
-        .detail-animate { display: flex; gap: 60px; width: 100%; align-items: center; animation: slideUpFade 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
-
-        .detail-left { flex: 2; text-align: right; }
-        .detail-right { flex: 3; text-align: left; }
-        .detail-icon { font-size: 80px; margin-bottom: 40px; }
-        .detail-left h3 { font-size: 35px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
-        .detail-left h4 { font-size: 14px; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
-        .detail-right .tagline { font-size: 24px; font-weight: 900; color: #37474f; margin-bottom: 20px; line-height: 1.3; }
-        .detail-right .desc { font-size: 16px; color: #455a64; line-height: 1.6; margin-bottom: 30px; }
-        .detail-right .divider { height: 2px; width: 50px; background: #cfd8dc; margin-bottom: 30px; }
-        .bullet-point { display: flex; align-items: flex-start; margin-bottom: 15px; }
-        .bullet-point i { font-size: 20px; margin-right: 15px; margin-top: 2px; }
-        .bullet-point span { font-weight: bold; color: #455a64; font-size: 15px; line-height: 1.4; }
-
-        /* INSTALLATION SECTION */
-        .install-section { padding: 80px 20px; text-align: center; }
-        .install-section h2 { font-size: 35px; font-weight: 900; letter-spacing: 2px; color: #2D3436; }
+        .detail-wrapper {
+            width: 100%;
+            display: flex; 
+            gap: 50px; 
+            align-items: center;
+        }
         
-        .email-capture-box { background: var(--base-color); max-width: 600px; margin: 0 auto 40px; padding: 40px; border-radius: 20px; box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); }
-        .email-capture-box input { width: 100%; padding: 15px; border-radius: 10px; border: none; background: #E0E5EC; box-shadow: inset 4px 4px 8px #A3B1C6, inset -4px -4px 8px #FFFFFF; font-size: 16px; margin-bottom: 25px; outline: none; text-align: center; font-weight: 600;}
+        .fade-in { animation: smoothFade 0.4s ease forwards; }
+        @keyframes smoothFade { 
+            0% { opacity: 0; transform: translateY(10px); } 
+            100% { opacity: 1; transform: translateY(0); } 
+        }
 
-        .action-hub { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
-        .action-btn { display: flex; align-items: center; width: 250px; padding: 25px; background-color: var(--base-color); border-radius: 20px; border: none; box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); text-decoration: none; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .detail-left { flex: 1; text-align: center; }
+        .detail-right { flex: 1.5; text-align: left; }
         
-        .action-btn:active { transform: scale(0.95) !important; box-shadow: inset 6px 6px 12px var(--dark-shadow), inset -6px -6px 12px var(--light-shadow) !important; animation: none; }
+        .detail-icon { font-size: 55px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+        
+        .detail-left h3 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 4vw, 36px); font-weight: 700; color: var(--text-main); line-height: 1.2; }
+        .detail-left h4 { font-size: 12px; font-weight: 800; letter-spacing: 1px; margin-top: 8px; }
+        
+        .detail-right .tagline { font-size: clamp(18px, 3vw, 24px); font-weight: 800; color: var(--text-main); margin-bottom: 15px; line-height: 1.3; }
+        .detail-right .desc { font-size: 15px; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
+        
+        .bullet-point { display: flex; align-items: flex-start; margin-bottom: 10px; }
+        .bullet-point i { font-size: 16px; margin-right: 12px; margin-top: 3px; }
+        .bullet-point span { font-weight: 600; color: var(--text-main); font-size: 14px; line-height: 1.4; }
 
-        .action-icon { font-size: 35px; margin-right: 20px; }
-        .action-text { display: flex; flex-direction: column; text-align: left; }
-        .action-title { font-weight: 900; font-size: 15px; color: #37474f; margin-bottom: 5px; }
-        .action-subtitle { font-weight: bold; font-size: 11px; color: #9e9e9e; }
+        /* --- INSTALLATION HUB --- */
+        .install-section { padding: 60px 20px; text-align: center; }
+        .install-box { 
+            max-width: 600px; margin: 0 auto; padding: 40px 30px; 
+            display: flex; flex-direction: column; align-items: center;
+            position: relative; z-index: 10;
+        }
+        
+        .email-form-wrapper { width: 100%; position: relative; z-index: 20; }
 
-        .status-msg { margin-top: 20px; font-weight: bold; font-size: 14px; display: none; }
+        .email-input { 
+            width: 100%; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); 
+            background: #fff; box-shadow: inset 2px 2px 6px rgba(0,0,0,0.02); 
+            font-size: 15px; margin-bottom: 20px; outline: none; text-align: center; font-weight: 600;
+            color: var(--text-main); transition: 0.3s;
+        }
+        .email-input:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2); border-color: var(--app-blue); }
 
-        .email-badge { display: inline-flex; align-items: center; padding: 15px 25px; background-color: rgba(255, 152, 0, 0.1); border-radius: 30px; border: 1px solid rgba(255, 152, 0, 0.5); margin-top: 30px; }
-        .email-badge i { color: #ff9800; font-size: 18px; margin-right: 10px; }
-        .email-badge span { color: #ef6c00; font-weight: bold; font-size: 14px; }
+        .btn-hub { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; width: 100%; }
+        .btn-hub .btn-action { flex: 1; min-width: 200px; }
+        
+        .status-msg { margin-top: 15px; font-weight: 700; font-size: 13px; display: none; padding: 10px; border-radius: 10px; width: 100%; }
+        .live-badge { display: inline-flex; align-items: center; padding: 8px 18px; background: rgba(0, 122, 255, 0.08); border-radius: 100px; border: 1px solid rgba(0, 122, 255, 0.2); margin-top: 30px; font-size: 11px; font-weight: 800; color: var(--app-blue); letter-spacing: 1px; }
 
-        /* TOAST NOTIFICATION */
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #2D3436; color: #fff; padding: 16px 32px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 700; font-size: 15px; z-index: 9999; display: flex; align-items: center; gap: 15px; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toast.show { bottom: 40px; }
-        .toast i { color: #00E676; font-size: 20px; }
+        /* TOAST */
+        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(29, 29, 31, 0.9); backdrop-filter: blur(10px); color: #fff; padding: 14px 25px; border-radius: 100px; box-shadow: 0 15px 30px rgba(0,0,0,0.2); font-weight: 700; font-size: 13px; z-index: 9999; display: flex; align-items: center; gap: 10px; transition: bottom 0.5s; width: max-content; }
+        .toast.show { bottom: 30px; }
+        .toast i { color: var(--app-green); font-size: 16px; }
 
-        /* STORY SECTION */
-        .story-section { background-color: var(--dark-bg); padding: 80px 20px; box-shadow: 0 10px 20px rgba(163, 177, 198, 0.5); text-align: center; }
-        .story-section h4 { color: var(--cyan-accent); font-weight: 900; letter-spacing: 4px; font-size: 16px; margin: 20px 0 30px; }
-        .story-section p { color: rgba(255,255,255,0.9); font-size: clamp(16px, 2vw, 22px); font-weight: 300; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+        footer { text-align: center; padding: 40px 20px 30px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; }
+        footer p { font-size: 12px; color: var(--text-sub); }
 
-        /* FOOTER */
-        footer { padding: 60px 50px; border-top: 1px solid rgba(163, 177, 198, 0.3); display: flex; justify-content: space-between; align-items: flex-end;}
-        .footer-left h2 { color: #9e9e9e; font-weight: 900; letter-spacing: 5px; margin-bottom: 10px; }
-        .footer-left p { color: #90a4ae; font-size: 12px; }
-        .footer-right { text-align: right; }
-        .footer-right p { color: #607D8B; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-        .footer-right a { color: #3f51b5; font-weight: bold; text-decoration: none; font-size: 14px; }
-
-        /* MOBILE RESPONSIVE */
-        @media (max-width: 800px) {
-            .features-header { padding: 0 20px; }
-            .features-header h2 { font-size: 28px; }
-            .feature-detail-box { flex-direction: column; padding: 30px; margin: 40px 20px 0; gap: 30px; text-align: center;}
-            .detail-left, .detail-right { text-align: center; }
-            .detail-icon { font-size: 60px; margin-bottom: 20px; }
-            .detail-left h3 { font-size: 28px; }
-            .detail-right .tagline { font-size: 16px; }
-            .detail-right .desc { font-size: 14px; }
-            .detail-right .divider { margin: 0 auto 30px; }
-            footer { flex-direction: column; text-align: left; align-items: flex-start; padding: 60px 20px;}
-            .footer-right { text-align: left; margin-top: 20px; }
-            .carousel-track { scroll-padding-inline-start: 10%; padding: 40px 10%;}
-            .feature-item { flex: 0 0 70%; }
-            .detail-animate { flex-direction: column; text-align: center; }
+        /* 🔥 MASSIVE MOBILE FIXES 🔥 */
+        @media (max-width: 900px) {
+            .hero { padding: 100px 0 40px; }
+            h1 { font-size: clamp(32px, 10vw, 45px); line-height: 1.2; margin-bottom: 15px;}
+            
+            /* Fluid Box Fix */
+            .feature-detail-box { 
+                padding: 30px 20px; 
+                min-height: auto; /* Let it grow naturally */
+                height: auto;
+                border-radius: 25px;
+            }
+            .detail-wrapper { 
+                flex-direction: column; gap: 25px; 
+                padding: 0;
+            }
+            
+            .detail-left, .detail-right { text-align: center; width: 100%; transform: none;}
+            .detail-right .divider { margin: 0 auto 20px; }
+            .bullet-point { justify-content: flex-start; text-align: left; }
+            .hud-display { margin: 0 auto 15px; width: 80px; height: 80px; }
+            
+            .install-box { padding: 30px 20px; border-radius: 25px; }
+            .btn-hub { flex-direction: column; }
+            .btn-hub .btn-action { width: 100%; margin: 0; }
+            
+            .spatial-glass { transform: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-blob" id="blob1" style="top: -10%; left: -10%;"></div>
-    <div class="bg-blob" id="blob2" style="animation-delay: -10s; bottom: -10%; right: -10%;"></div>
+
+    <div class="ambient-engine"></div>
 
     <section class="hero container">
-        <i class="fa-solid fa-book-open hero-icon"></i>
-        <h1>GURUDIARY</h1>
-        <h2>The Operating System For Teachers.</h2>
-        <p>We replaced heavy registers and messy diaries with a sleek, offline-first digital console. Experience the future of classroom management.</p>
-        
-        <div class="scroll-hint">
-            <span>SCROLL FOR FEATURES</span>
-            <i class="fa-solid fa-angles-down"></i>
+        <div class="system-pill">
+            <i class="fa-solid fa-shield-halved" style="color: var(--app-green);"></i> 100% OFFLINE ARCHITECTURE
         </div>
+        <h1>GuruDiary<br><span>Spatial OS</span></h1>
+        <p class="hero-p">Replace messy registers with a sleek, private digital console. Experience the future of intelligent classroom management.</p>
+        
+        <a href="https://satishrangile43.github.io/gurudairy/app/web/" target="_blank" class="btn-action">
+            <i class="fa-solid fa-laptop-code"></i> Try Web Version for Demo
+        </a>
     </section>
 
-    <section class="features-section">
-        <div class="container features-header">
-            <h2>FEATURES PANEL</h2>
-            <p>Swipe or click to explore deep features.</p>
-        </div>
+    <section class="features-section container">
+        <h2 style="text-align: center; font-family: 'Space Grotesk'; font-size: 28px; margin-bottom: 5px; color: var(--text-main);">System Capabilities</h2>
+        <p style="text-align: center; color: var(--text-sub); font-weight: 500; font-size: 14px; margin-bottom: 25px;">Swipe to explore the modules powering your workspace.</p>
+        
         <div class="carousel-track" id="carouselTrack"></div>
-        <div class="feature-detail-box" id="detailBox"></div>
+        <div class="feature-detail-box spatial-glass" id="detailBox">
+            </div>
     </section>
 
     <section class="install-section container">
-        <h2>SECURE INSTALLATION</h2>
-        
-        <div class="email-capture-box">
-            <a href="https://satishrangile43.github.io/gurudairy/app/web/" target="_blank" class="action-btn" style="width: 100%; margin-bottom: 30px; background: #fff; border: 2px solid #3f51b5;">
-                <i class="fa-solid fa-laptop-code action-icon" style="color: #3f51b5;"></i>
-                <div class="action-text">
-                    <span class="action-title" style="color: #3f51b5;">TRY APP FEATURES</span>
-                    <span class="action-subtitle">Access Web Trial</span>
+        <div class="install-box spatial-glass">
+            <h2 style="font-family: 'Space Grotesk'; font-size: 26px; margin-bottom: 10px; color: var(--text-main);">Secure Deployment</h2>
+            <p style="color: var(--text-sub); font-weight: 500; margin-bottom: 25px; font-size: 13px;">Enter your email to access the encrypted download packages. No spam, pure utility.</p>
+            
+            <div class="email-form-wrapper">
+                <input type="email" id="userEmail" class="email-input" placeholder="educator@institute.edu" required>
+
+                <div class="btn-hub">
+                    <button class="btn-action btn-dark" onclick="processDownload('Android ')">
+                        <i class="fa-brands fa-android"></i> Android v.1.0
+                    </button>
+                    <button class="btn-action btn-dark" onclick="processDownload('Windows')">
+                        <i class="fa-brands fa-windows"></i> Windows v.1.0
+                    </button>
                 </div>
-            </a>
-
-            <hr style="border: none; border-top: 2px dashed rgba(163, 177, 198, 0.4); margin-bottom: 30px;">
-            
-            <p style="color: #607d8b; font-weight: bold; margin-bottom: 20px; font-size: 15px;">No spam. Only download link. 100% private.</p>
-            
-            <input type="email" id="userEmail" placeholder="e.g. yourname@school.com" required>
-
-            <div class="action-hub">
-                <button class="action-btn" onclick="processDownload('Android')">
-                    <i class="fa-brands fa-android action-icon" style="color: #388e3c;"></i>
-                    <div class="action-text">
-                        <span class="action-title">Get Android App</span>
-                        <span class="action-subtitle">Version 1.0</span>
-                    </div>
-                </button>
-                
-                <button class="action-btn" onclick="processDownload('Windows')">
-                    <i class="fa-brands fa-windows action-icon" style="color: #1976d2;"></i>
-                    <div class="action-text">
-                        <span class="action-title">Get Windows PC</span>
-                        <span class="action-subtitle">Version 1.0</span>
-                    </div>
-                </button>
             </div>
 
             <p id="statusMessage" class="status-msg"></p>
         </div>
 
-        <div class="email-badge">
-            <i class="fa-solid fa-chart-line"></i>
-            <span id="liveCountText">Loading Live Downloads...</span>
+        <div class="live-badge">
+            <i class="fa-solid fa-satellite-dish" style="margin-right: 6px;"></i>
+            <span id="liveCountText">Connecting to secure servers...</span>
         </div>
     </section>
 
     <div id="downloadToast" class="toast">
         <i class="fa-solid fa-circle-check"></i>
-        <span id="toastMsg">Download Started!</span>
+        <span id="toastMsg">Deployment Initiated!</span>
     </div>
 
-    <section class="story-section">
-        <div class="container">
-            <i class="fa-regular fa-lightbulb" style="color: #18ffff; font-size: 50px;"></i>
-            <h4>WHY WE BUILT GURUDIARY</h4>
-            <p>
-                Teachers spend hours calculating attendance, managing lost papers, and recreating timetables. We realized that existing apps force schools to buy expensive software or steal user data by keeping it on cloud servers.<br><br>
-                GuruDiary was born with a single mission: To give individual teachers a powerful, 100% offline, private digital console. Your data, your device, your control.
-            </p>
-        </div>
-    </section>
-
     <footer>
-        <div class="footer-left">
-            <h2>GURUDIARY</h2>
-            <p>Official Project Website © 2026</p>
-        </div>
-        <div class="footer-right">
-            <p>Developed with ❤️ by Satish Rangile</p>
-            <a href="#" onclick="showToast('Privacy Policy is currently being updated.')">Privacy Policy & Features</a>
-        </div>
+        <p style="font-weight: 800; color: var(--text-main); margin-bottom: 5px; letter-spacing: 1px;">GURUDIARY PROJECT © 2026</p>
+        <p>Engineered with precision by Satish Rangile. Your data never leaves your device.</p>
     </footer>
 
     <script>
         // ==========================================
-        // 🔴 GOOGLE SCRIPT & GITHUB LINKS 
+        // 🔴 GOOGLE SCRIPT & GITHUB LINKS
         // ==========================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlWyIZBkaNCPST_aotdypgIw3cOHyDR-ghhWzNxdtZ89z4G96vFkNrsw-9XuyrN6B9og/exec";
-        
-        // STEP 5: Download Link Protection (Base64 Encoded) 🛡️
         const ANDROID_LINK = atob("aHR0cHM6Ly9naXRodWIuY29tL3NhdGlzaHJhbmdpbGU0My9ndXJ1ZGFpcnkvcmVsZWFzZXMvZG93bmxvYWQvdjEuMC9hcHAtcmVsZWFzZUQuYXBr");
         const WINDOWS_LINK = atob("aHR0cHM6Ly9naXRodWIuY29tL3NhdGlzaHJhbmdpbGU0My9ndXJ1ZGFpcnkvcmVsZWFzZXMvZG93bmxvYWQvdjEuMC9HdXJ1RGlhcnlTZXR1cEQuZXhl");
         
@@ -309,45 +379,43 @@
             fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
-                document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
+                if(data && data.count) document.getElementById("liveCountText").innerText = `ACTIVE DEPLOYMENTS: ${data.count} EDUCATORS`;
             })
-            .catch(err => {
-                document.getElementById("liveCountText").innerText = "Ready for Secure Download";
+            .catch(() => {
+                document.getElementById("liveCountText").innerText = "SYSTEMS READY FOR DEPLOYMENT";
             });
 
-            // Initialize professional UI Logic
             initTrack();
             updateTrackUI();
-            renderDetail(); 
+            renderDetail(true); 
             startFlow(); 
+            initSpatialTilt(); 
         };
 
-        // --- THE GOLDEN FLOW: DOWNLOAD PROCESS ---
+        // --- DOWNLOAD PROCESS ---
         function processDownload(platform) {
             const emailInput = document.getElementById("userEmail").value.trim();
             const statusMsg = document.getElementById("statusMessage");
 
-            // STEP 2: Strong Email Validation 📧
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(emailInput)) {
                 statusMsg.style.display = "block";
-                statusMsg.style.color = "#d32f2f";
-                statusMsg.innerText = "⚠️ Enter a valid email address!";
+                statusMsg.style.background = "rgba(255, 59, 48, 0.1)";
+                statusMsg.style.color = "#FF3B30";
+                statusMsg.innerText = "⚠️ Invalid Email Format";
                 return;
             }
 
             const downloadUrl = platform === "Android" ? ANDROID_LINK : WINDOWS_LINK;
 
-            // STEP 8: UX Upgrade (Instant Feedback) 🔥
-            showToast("🚀 Download starting...");
+            showToast(`🚀 Initializing ${platform} Package...`);
             statusMsg.style.display = "block";
-            statusMsg.style.color = "#388e3c";
-            statusMsg.innerText = `✅ Thank You! ${platform} download started!`;
+            statusMsg.style.background = "rgba(52, 199, 89, 0.1)";
+            statusMsg.style.color = "#34C759";
+            statusMsg.innerText = `✅ Secure link established. Download started.`;
 
-            // STEP 1: Golden Flow (Instant Download without waiting for API) 🚀
             window.location.href = downloadUrl;
 
-            // STEP 3: Background API Call + Failsafe Backup System ⚡
             const formData = new URLSearchParams();
             formData.append("email", emailInput);
             formData.append("platform", platform);
@@ -356,36 +424,27 @@
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData.toString()
-            })
-            .then(res => res.json())
-            .then(data => {
-                // Background me counter update ho jayega
-                if(data && data.count) {
-                    document.getElementById("liveCountText").innerText = `Successfully Downloaded by ${data.count} Educators`;
-                }
-            })
-            .catch(() => {
-                // Failsafe mode: Agar google script fail bhi ho jaye, user ka download nahi rukega.
-                console.log("Backup mode active. API tracking skipped, but user got the file.");
-            });
+            }).then(res => res.json()).then(data => {
+                if(data && data.count) document.getElementById("liveCountText").innerText = `ACTIVE DEPLOYMENTS: ${data.count} EDUCATORS`;
+            }).catch(() => console.log("Silent Backup Mode Active."));
         }
 
         // ==========================================
-        // 🚀 ENTERPRISE-GRADE CAROUSEL LOGIC
+        // 🚀 CAROUSEL LOGIC
         // ==========================================
         const featuresData = [
-            { title: "Student List", subtitle: "MASTER DIRECTORY", icon: "fa-id-badge", color: "#6D4C41", tagline: "Your Complete Classroom Roster.", desc: "Stop carrying physical student data registers. Manage a local digital database of all your students.", bullets: ["Create and organize individual profiles.", "Quickly search by Name or Roll Number.", "100% offline local storage ensures privacy.", "Seamlessly integrates with Attendance."] },
-            { title: "Attendance", subtitle: "MARK & TRACK", icon: "fa-clipboard-user", color: "#1E88E5", tagline: "Lightning Fast Roll Calls.", desc: "Replace heavy physical registers with a streamlined digital tracker.", bullets: ["Quick tap-to-toggle attendance.", "Filter and view historical records.", "No internet required to mark or view.", "Generate clean, shareable PDF reports."] },
-            { title: "Books", subtitle: "MANAGE LIBRARY", icon: "fa-book", color: "#F4511E", tagline: "Your Personal Logbook.", desc: "Never lose track of the reference books or notes you lend to students or colleagues.", bullets: ["Keep a digital record of all issued books.", "Tag books to specific students.", "Track issue dates and return deadlines.", "Maintain a neat inventory of your library."] },
-            { title: "Timetable", subtitle: "DAILY SCHEDULE", icon: "fa-table-cells", color: "#43A047", tagline: "Your Classic Schedule, Digitized.", desc: "A fully interactive X-Y grid matching standard college formats.", bullets: ["Interactive dual-box time selector.", "Tap any cell to assign Subject and Room.", "Hold a time slot to securely delete it.", "One-click Export to PDF and Excel files."] },
-            { title: "Reminder", subtitle: "NEVER FORGET", icon: "fa-bell", color: "#E53935", tagline: "Your Academic Alarm System.", desc: "From exam duty deadlines to departmental meetings, a teacher's day is packed.", bullets: ["Set direct local reminders for tasks.", "Keep a clean, offline to-do list.", "Prioritize urgent departmental submissions.", "Runs independently without calendar apps."] },
-            { title: "NoteDown", subtitle: "RICH TEXT EDITOR", icon: "fa-file-pen", color: "#8E24AA", tagline: "Draft Lectures. Securely.", desc: "A powerful word processor built right into your console. Write lecture points, draft question papers.", bullets: ["Full Rich-Text Support (Bold, Headers).", "Real-time local saving.", "Clean, distraction-free interface.", "Fully private—nobody else can access it."] },
-            { title: "Holidays", subtitle: "YEARLY CALENDAR", icon: "fa-umbrella-beach", color: "#00897B", tagline: "Plan Your Academic Year.", desc: "Keep the official college holiday calendar in your pocket.", bullets: ["Log official semester holidays.", "Calculate available working days.", "Keep a visual dashboard of off-days.", "Never get confused about local holidays."] }
+            { title: "Directory", subtitle: "MASTER VAULT", icon: "fa-id-badge", color: "#8e8e93", tagline: "Your Complete Classroom Roster.", desc: "Stop carrying physical student data registers. Manage a local digital database of all your students with neural search capabilities.", bullets: ["Create and organize individual profiles.", "Quickly search by Name or Roll Number.", "100% offline local storage ensures privacy.", "Seamlessly integrates with Attendance."] },
+            { title: "Attendance", subtitle: "MARK & TRACK", icon: "fa-fingerprint", color: "#007aff", tagline: "Lightning Fast Roll Calls.", desc: "Replace heavy physical registers with a streamlined digital tracker built for zero-latency execution.", bullets: ["Quick tap-to-toggle attendance.", "Filter and view historical records.", "No internet required to mark or view.", "Generate clean, shareable PDF reports."] },
+            { title: "Library", subtitle: "BOOK LOGS", icon: "fa-book", color: "#ff9500", tagline: "Your Personal Logbook.", desc: "Never lose track of the reference books or notes you lend to students or colleagues.", bullets: ["Keep a digital record of all issued books.", "Tag books to specific students.", "Track issue dates and return deadlines.", "Maintain a neat inventory of your library."] },
+            { title: "Timetable", subtitle: "X-Y SCHEDULE", icon: "fa-table-cells", color: "#34c759", tagline: "Your Classic Schedule, Digitized.", desc: "A fully interactive spatial grid matching standard college formats for seamless day planning.", bullets: ["Interactive dual-box time selector.", "Tap any cell to assign Subject and Room.", "Hold a time slot to securely delete it.", "One-click Export to PDF and Excel files."] },
+            { title: "Reminders", subtitle: "ALARM SYSTEM", icon: "fa-bell", color: "#ff3b30", tagline: "Your Academic Alarm System.", desc: "From exam duty deadlines to departmental meetings, a teacher's day is packed. Let the OS remember.", bullets: ["Set direct local reminders for tasks.", "Keep a clean, offline to-do list.", "Prioritize urgent departmental submissions.", "Runs independently without calendar apps."] },
+            { title: "NoteDown", subtitle: "RICH EDITOR", icon: "fa-file-pen", color: "#5856d6", tagline: "Draft Lectures. Securely.", desc: "A powerful word processor built right into your console. Write lecture points, draft question papers.", bullets: ["Full Rich-Text Support (Bold, Headers).", "Real-time local saving.", "Clean, distraction-free interface.", "Fully private—nobody else can access it."] },
+            { title: "Holidays", subtitle: "CALENDAR", icon: "fa-umbrella-beach", color: "#32ade6", tagline: "Plan Your Academic Year.", desc: "Keep the official college holiday calendar in your pocket and manage your workflow efficiently.", bullets: ["Log official semester holidays.", "Calculate available working days.", "Keep a visual dashboard of off-days.", "Never get confused about local holidays."] }
         ];
 
         let currentIndex = 0; 
         let masterTimer = null; 
-        const intervalTime = 3500; 
+        const intervalTime = 4000; 
         const track = document.getElementById('carouselTrack');
         const detailBox = document.getElementById('detailBox');
 
@@ -412,50 +471,57 @@
             items.forEach((item, idx) => {
                 if(idx === currentIndex) {
                     item.classList.add('active');
-                    const scrollLeft = item.offsetLeft - (track.clientWidth / 2) + (item.clientWidth / 2);
-                    track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                    if (window.innerWidth <= 900) {
+                         const scrollLeft = item.offsetLeft - (track.clientWidth / 2) + (item.clientWidth / 2);
+                         track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                    }
                 } else {
                     item.classList.remove('active');
                 }
             });
         }
 
-        function renderDetail() {
+        // 🔥 FIXED: Fluid layout prevents overflow and jumping
+        function renderDetail(isInitial = false) {
             const f = featuresData[currentIndex];
+            const bulletsHTML = f.bullets.map(b => `
+                <div class="bullet-point">
+                    <i class="fa-solid fa-circle-check" style="color: ${f.color};"></i>
+                    <span>${b}</span>
+                </div>`).join('');
             
-            document.getElementById('blob1').style.background = `radial-gradient(circle, ${f.color}33 0%, transparent 70%)`;
-            document.getElementById('blob2').style.background = `radial-gradient(circle, ${f.color}22 0%, transparent 70%)`;
+            const htmlContent = `
+                <div class="detail-wrapper fade-in">
+                    <div class="detail-left">
+                        <div class="hud-display" style="display:inline-flex; width: 80px; height: 80px; margin-bottom:15px; color:${f.color};">
+                            <i class="fa-solid ${f.icon} detail-icon" style="margin:0; font-size: 40px;"></i>
+                        </div>
+                        <h3>${f.title}</h3>
+                        <h4 style="color: ${f.color};">${f.subtitle}</h4>
+                    </div>
+                    <div class="detail-right">
+                        <div class="tagline">${f.tagline}</div>
+                        <div class="desc">${f.desc}</div>
+                        <div class="divider" style="height: 3px; width: 40px; background: ${f.color}; margin-bottom: 20px; border-radius: 5px; opacity: 0.5;"></div>
+                        ${bulletsHTML}
+                    </div>
+                </div>`;
 
-            detailBox.innerHTML = ''; 
-            
-            setTimeout(() => {
-                const bulletsHTML = f.bullets.map(b => `
-                    <div class="bullet-point">
-                        <i class="fa-solid fa-circle-check" style="color: ${f.color};"></i>
-                        <span>${b}</span>
-                    </div>`).join('');
-                
-                detailBox.innerHTML = `
-                    <div class="detail-animate">
-                        <div class="detail-left">
-                            <i class="fa-solid ${f.icon} detail-icon" style="color: ${f.color}; filter: drop-shadow(5px 5px 10px rgba(163,177,198,0.8));"></i>
-                            <h3>${f.title}</h3>
-                            <h4 style="color: ${f.color};">${f.subtitle}</h4>
-                        </div>
-                        <div class="detail-right">
-                            <div class="tagline">${f.tagline}</div>
-                            <div class="desc">${f.desc}</div>
-                            <div class="divider" style="background-color: ${f.color}80;"></div>
-                            ${bulletsHTML}
-                        </div>
-                    </div>`;
-            }, 50); 
+            if (isInitial) {
+                detailBox.innerHTML = htmlContent;
+            } else {
+                const oldWrapper = detailBox.querySelector('.detail-wrapper');
+                if (oldWrapper) {
+                    oldWrapper.classList.remove('fade-in');
+                    void detailBox.offsetWidth; // Force Reflow
+                    detailBox.innerHTML = htmlContent;
+                }
+            }
         }
 
         function autoScroll() { 
             currentIndex = (currentIndex + 1) % featuresData.length; 
-            updateTrackUI(); 
-            renderDetail(); 
+            updateTrackUI(); renderDetail(); 
         }
 
         function startFlow() {
@@ -464,17 +530,13 @@
         }
 
         function stopFlow() {
-            if (masterTimer) {
-                clearInterval(masterTimer);
-                masterTimer = null;
-            }
+            if (masterTimer) { clearInterval(masterTimer); masterTimer = null; }
         }
 
         function setIndex(idx) { 
+            if(currentIndex === idx) return;
             currentIndex = idx; 
-            updateTrackUI();
-            renderDetail(); 
-            startFlow(); 
+            updateTrackUI(); renderDetail(); startFlow(); 
         }
 
         track.addEventListener('mouseenter', stopFlow);
@@ -483,10 +545,32 @@
         detailBox.addEventListener('mouseleave', startFlow);
         
         track.addEventListener('touchstart', stopFlow, { passive: true });
-        track.addEventListener('touchend', () => {
-            setTimeout(() => { if(!masterTimer) startFlow(); }, 1500);
-        }, { passive: true });
+        track.addEventListener('touchend', () => { setTimeout(() => { if(!masterTimer) startFlow(); }, 2000); }, { passive: true });
 
+        // ==========================================
+        // 🚀 3D SPATIAL TILT LOGIC (Desktop Only)
+        // ==========================================
+        function initSpatialTilt() {
+            detailBox.addEventListener('mousemove', (e) => {
+                if(window.innerWidth <= 900) return; 
+                const rect = detailBox.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (centerY - y) / 50;
+                const rotateY = (x - centerX) / 50;
+                
+                detailBox.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            detailBox.addEventListener('mouseleave', () => {
+                if(window.innerWidth > 900) {
+                    detailBox.style.transform = 'rotateX(0deg) rotateY(0deg)';
+                }
+            });
+        }
     </script>
 </body>
 </html>
