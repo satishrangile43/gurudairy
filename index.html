@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>GuruDiary | The Spatial Console</title>
-    <meta name="description" content="GuruDiary Spatial OS - A secure, 100% offline digital console for USERS.">
+    <title>GuruDiary - Official App & Spatial OS</title>
+    <meta name="description" content="Welcome to the official GuruDiary app. GuruDiary is a secure, 100% offline digital console and spatial OS for educators and student management.">
+    <meta name="keywords" content="GuruDiary, GuruDiary app, GuruDiary official, spatial OS, offline attendance tracker, digital diary for teachers">
     <meta name="author" content="Satish Rangile">
+
+    <meta property="og:title" content="GuruDiary | The Official Spatial Console">
+    <meta property="og:description" content="Experience GuruDiary, the 100% offline digital console for intelligent classroom management.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://satishrangile43.github.io/gurudairy/app/web/">
+    
+    <link rel="canonical" href="https://satishrangile43.github.io/gurudairy/app/web/">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -106,7 +114,7 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.6); z-index: 2000; display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.6); z-index: 10000; display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px);
         }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
@@ -275,7 +283,7 @@
         }
         .feedback-fab:hover { transform: scale(1.15) rotate(15deg); box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35); }
 
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--toast-bg); backdrop-filter: blur(15px); color: var(--toast-text); padding: 16px 30px; border-radius: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); font-weight: 800; font-size: 14px; z-index: 9999; display: flex; align-items: center; gap: 12px; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: max-content; }
+        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--toast-bg); backdrop-filter: blur(15px); color: var(--toast-text); padding: 16px 30px; border-radius: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); font-weight: 800; font-size: 14px; z-index: 10001; display: flex; align-items: center; gap: 12px; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: max-content; }
         .toast.show { bottom: 40px; }
         .toast i { color: var(--app-green); font-size: 18px; }
 
@@ -363,7 +371,7 @@
             </div>
             
             <h1>GuruDiary<br><span>Spatial OS</span></h1>
-            <p class="hero-p">Replace messy registers with a sleek, private digital console. Experience the future of intelligent classroom management.</p>
+            <p class="hero-p">Welcome to the official <b>GuruDiary</b> platform. Replace messy paper registers with a sleek, private digital console. Experience the future of intelligent classroom management with the GuruDiary app.</p>
             <a href="https://satishrangile43.github.io/gurudairy/app/web/" target="_blank" class="btn-action" aria-label="Try Web Version Demo"><i class="fa-solid fa-laptop-code"></i> Try Web Version for Demo</a>
         </section>
 
@@ -510,16 +518,24 @@
     </div>
 
     <footer class="reveal">
-        <p style="font-weight: 900; font-size: 14px; letter-spacing: 1px;">GURUDIARY PROJECT © 2026</p>
-        <p style="margin-top: 8px;">Developed by Satish Rangile. Your data never leaves your device.</p>
+        <p style="font-weight: 900; font-size: 14px; letter-spacing: 1px;">THE OFFICIAL GURUDIARY PROJECT © 2026</p>
+        <p style="margin-top: 8px;">Developed by Satish Rangile. Download GuruDiary today. Your data never leaves your device.</p>
     </footer>
 
     <script>
+        // --- AUDIO AUTO-PLAY POLICY FIX ---
+        let userInteracted = false;
+        const enableAudio = () => { userInteracted = true; document.body.removeEventListener('click', enableAudio); };
+        document.body.addEventListener('click', enableAudio);
+        document.body.addEventListener('keydown', enableAudio);
+
         // --- SOUND ENGINE ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
 
         function playSound(type) {
+            if (!userInteracted) return; // Fix: Only play sound if user has interacted with the page
+
             if (!audioCtx) audioCtx = new AudioContext();
             if (audioCtx.state === 'suspended') audioCtx.resume();
             
@@ -814,7 +830,7 @@
 
             fetch(SCRIPT_URL).then(res => res.json()).then(data => { if(data && data.count) document.getElementById("liveCountText").innerText = `ACTIVE DEPLOYMENTS: ${data.count} USERS`; }).catch(() => { document.getElementById("liveCountText").innerText = "SYSTEMS READY FOR DEPLOYMENT"; });
             
-            initTrack(); updateTrackUI(); startFlow(); initSpatialTilt(); 
+            initTrack(); initSpatialTilt(); 
             fetchFeed(); runAutoScroll(); 
         };
 
@@ -942,9 +958,6 @@
             });
             detailBox.addEventListener('mouseleave', () => detailBox.style.transform = 'translateZ(0) rotateX(0) rotateY(0) scale3d(1,1,1)');
         }
-
-        // Empty placeholders for startFlow/updateTrackUI if not fully defined in original snippet
-        function startFlow() {} function updateTrackUI() {}
 
         // --- FEEDBACK LOGIC ---
         let autoScrollActive = true;

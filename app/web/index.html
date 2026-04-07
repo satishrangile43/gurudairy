@@ -5,7 +5,11 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="GuruDiary Web Portal - The Operating System for Teachers.">
+  
+  <meta name="description" content="GuruDiary Web Portal - The secure, 100% offline Spatial OS for Educators.">
+  <meta property="og:title" content="GuruDiary Web | The Spatial Console">
+  <meta property="og:description" content="Access your intelligent classroom management console securely from your browser.">
+  <meta property="og:type" content="website">
 
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -27,13 +31,14 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   
   <style id="splash-screen-style">
-    /* 🔥 NEW ANIMATED SPLASH SCREEN CSS */
+    /* 🔥 UPGRADED PREMIUM SPLASH SCREEN CSS */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       width: 100%;
       background-color: #f5f5f7; /* Mac Bright background */
+      background-image: radial-gradient(circle at 50% 0%, rgba(0, 122, 255, 0.05) 0%, transparent 70%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -42,61 +47,110 @@
       overflow: hidden; 
     }
 
-    /* The Glowing Spinner */
+    #splash {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5f5f7;
+      z-index: 9999;
+      transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth fade out */
+    }
+
+    .splash-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      padding: 45px 65px;
+      border-radius: 35px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04), inset 0 0 15px rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: floatUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Modern Dual Glowing Spinner */
+    .loader-container {
+      position: relative;
+      width: 65px;
+      height: 65px;
+      margin-bottom: 25px;
+    }
+
     .loader {
-      width: 60px;
-      height: 60px;
+      position: absolute;
+      width: 100%;
+      height: 100%;
       border: 4px solid rgba(0, 122, 255, 0.1);
-      border-left-color: #007aff; /* Apple Blue */
+      border-left-color: #007aff;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 30px;
+      animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
       box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .loader-inner {
+      position: absolute;
+      top: 10px; left: 10px; right: 10px; bottom: 10px;
+      border: 3px solid rgba(52, 199, 89, 0.1);
+      border-right-color: #34c759;
+      border-radius: 50%;
+      animation: spinReverse 1.5s linear infinite;
     }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spinReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
     /* Professional Text */
     .brand-title {
-      font-size: 28px;
-      font-weight: 800;
+      font-size: 26px;
+      font-weight: 900;
       color: #1d1d1f;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       margin: 0 0 8px 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     .brand-title span {
-      color: #007aff;
+      background: linear-gradient(135deg, #007aff, #5856d6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .sub-title {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       color: #86868b;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
     }
 
     /* Pulse animation for the subtitle */
     .pulse-text {
-      animation: pulse 2s infinite;
+      animation: pulse 2s infinite ease-in-out;
     }
 
     @keyframes pulse {
-      0% { opacity: 0.5; }
+      0% { opacity: 0.4; }
       50% { opacity: 1; }
-      100% { opacity: 0.5; }
+      100% { opacity: 0.4; }
     }
   </style>
 
   <script>
-    // Security Script
+    // System Security Script (Kept as requested)
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.onkeydown = function(e) {
-      if (e.keyCode == 123) return false; 
+      if (e.keyCode == 123) return false; // F12
       if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
       if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; 
       if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; 
@@ -109,36 +163,41 @@
   <noscript>
     <div style="text-align: center; padding: 20px; font-family: sans-serif; color: #333;">
       <h2>JavaScript is Required</h2>
-      <p>Please enable JavaScript to launch GuruDiary.</p>
+      <p>Please enable JavaScript to launch the GuruDiary Spatial OS.</p>
     </div>
   </noscript>
 
   <div id="splash">
-    <div class="loader"></div>
-    <h1 class="brand-title">GuruDiary <span>Web</span></h1>
-    <div class="sub-title pulse-text">Initializing Secure Console...</div>
+    <div class="splash-card">
+      <div class="loader-container">
+        <div class="loader"></div>
+        <div class="loader-inner"></div>
+      </div>
+      <h1 class="brand-title">GuruDiary <span>Web</span></h1>
+      <div class="sub-title pulse-text">Initializing Engine...</div>
+    </div>
   </div>
   
   <script>
-    // Flutter boot script
-    // This script will automatically remove the #splash div when the app is ready.
-    window.addEventListener('load', function() {
-      var loading = document.querySelector('#splash');
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            loading.remove(); // Removes our custom loader
-            appRunner.runApp();
-          });
-        }
-      });
+    // MODERN FLUTTER BOOTSTRAP LOGIC
+    // This waits for Flutter to actually render its first frame before hiding the splash screen,
+    // preventing the ugly "white flash" in between loading and rendering.
+    
+    window.addEventListener('flutter-first-frame', function() {
+      var splash = document.getElementById('splash');
+      if (splash) {
+        // Trigger the CSS fade out
+        splash.style.opacity = '0';
+        
+        // Remove from DOM after fade out completes (600ms matches the CSS transition)
+        setTimeout(function() {
+          splash.remove();
+        }, 600);
+      }
     });
   </script>
 
-  <script src="flutter_bootstrap.js"></script>
+  <script src="flutter_bootstrap.js" async></script>
 
 </body>
 </html>
